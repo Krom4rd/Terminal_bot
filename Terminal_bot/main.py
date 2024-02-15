@@ -1,7 +1,9 @@
-import classes
+from classes import Address_book, Contact, Note
 
 import pathlib
 import pickle
+
+cache = [Address_book(),Note()]
 
 def greating():
     pass
@@ -30,7 +32,31 @@ def days_to_birthday():
 def note():
     pass
 
+def add_note():
+    pass
+
+def change_note():
+    pass
+
+def note_output():
+    pass
+
+def delete_note():
+    pass
+
+def show_all_notes():
+    pass
+
+def search_note():
+    pass
+
 def tag():
+    pass
+
+def add_tag():
+    pass
+
+def delete_tag():
     pass
 
 def about():
@@ -66,13 +92,39 @@ COMMANDS = {
     about: 'about',
     add_birthday: 'birthday',
     days_to_birthday: 'days to birthday',
-    note: 'note',
-    tag: 'tag',
+    add_note: 'note',
+    delete_note: 'del_note',
+    show_all_notes: 'show all notes',
+    search_note: 'snote',
+    add_tag: 'tag',
+    delete_tag: 'del_tag',
     sorting: 'sorting'
 }
 
-def main():
+def commands(data):
     pass
+
+def main():
+    # Якщо раніше використовувалася програма та було створено кеш: його буде відновлено
+    if pathlib.Path('cache.bin').exists():
+        return_cache()
+    # Цикл для тривалої роботи програми
+    while True:
+        # Отримання даних від користувачаa
+        user_input = input('>>>')
+        if user_input:
+            func, data = commands(user_input)
+        if func == None:
+            continue
+        elif func == exit:
+            # Вихід з програми та запис кешу в окремий файл
+            func(data)
+            print('Good bye')
+            break
+        else:
+            # Запуск команд
+            result = func(data)
+            print(result)
 
 if __name__ == '__main__':
     main()

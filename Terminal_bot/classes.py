@@ -53,4 +53,7 @@ class Tag(Field):
     def __init__(self, tag: str):
         pass
 
+class Note_book(UserDict):
+    def __init__(self, note: Note, tag: Tag = None):
+        pass
 
