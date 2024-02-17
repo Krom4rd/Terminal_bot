@@ -1,9 +1,10 @@
 from classes import Address_book, Contact, Note
+from datetime import datetime
 
 import pathlib
 import pickle
 
-cache = [Address_book(),Note()]
+# cache = [Address_book(),Note()]
 
 def greating():
     pass
@@ -25,9 +26,22 @@ def delete():
 
 def add_birthday():
     pass
-
-def days_to_birthday():
-    pass
+        
+def days_to_birthday(birthday):
+    if birthday:
+        if isinstance(birthday, str):
+            birthday = datetime.strptime(birthday, '%Y-%m-%d')
+            
+        today = datetime.today()
+        birthday_this_year = datetime(today.year, birthday.month, birthday.day)
+        if birthday_this_year >= today:
+            next_birthday = birthday_this_year
+        else:
+            next_birthday = datetime(today.year + 1, birthday.month, birthday.day)
+        days_left = (next_birthday - today).days
+        return days_left
+    else:
+        return None
 
 def note():
     pass
