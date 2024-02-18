@@ -16,19 +16,34 @@ class Field:
         self._value = value
 
     def __str__(self):
-        return str(self._value)
+        return str(self.value)
 
 class Name(Field):
     def __init__(self, name: str)-> None:
         super().__init__(name.lower().capitalize())
 
 class Phone(Field):
-    def __init__(self, number: str):
-        pass
+    def __init__(self, value):
+        super().__init__(value)
+        if not self.validate_number(value):
+            print("Invalid phone number format. Try again!")
+
+    def validate_number(self, number):
+        return len(number) == 10 and number.isdigit()
 
 class Email(Field):
     def __init__(self, mail: str):
-        pass
+        super().__init__(mail)
+        if not self.validate_email(mail):
+            print("Invalid email format. Try again!")
+
+    def validate_email(self, mail):
+        pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+        if re.match(pattern, mail):
+            return True
+        else:
+            return False
+
 
 class Address(Field):
     def __init__(self, address: str):
@@ -49,11 +64,29 @@ class Birthday(Field):
                     self._value = datetime.strptime(value, '%d-%m-%Y').date()
                 except ValueError:
                 # Якщо жоден з форматів не підходить, пишемо про помилку
-                    return "Значення повинно бути в форматі dd.mm.yyyy або dd-mm-yyyy"
+class-Birthday
+                    print("Значення повинно бути в форматі dd.mm.yyyy або dd-mm-yyyy")
 
 class Contact():
     def __init__(self, name: Name, phone: Phone = None, email: Email = None, address: Address = None, birthday: Birthday = None):
-        pass
+        self.name = name
+        
+        if phone is not None:
+            self.phone = Phone(phone)
+        if email is not None:
+            self.email = Email(email)
+        if address is not None:
+            self.address = Address(address)
+        if birthday is not None:
+            self.birthday = Birthday(birthday)
+    
+    def add_phone(self, phone_value):
+        phone = Phone(phone_value)
+        if phone != None:
+            self.phones.append(phone)
+            return True
+        else:
+            return False
 
 class Address_book(UserDict):
     pass
