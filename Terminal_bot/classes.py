@@ -35,8 +35,13 @@ class Address(Field):
         pass
 
 class Birthday(Field):
-    def __init__(self, day: str):
-        pass
+    def __init__(self, value):
+        super().__init__(value)
+        self.validate()
+
+    def validate(self):
+        if not isinstance(self.value, datetime):
+            raise ValueError("Помилка: Значення повинно бути об'єктом datetime")
 
 class Contact():
     def __init__(self, name: Name, phone: Phone = None, email: Email = None, address: Address = None, birthday: Birthday = None):
