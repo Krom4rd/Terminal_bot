@@ -4,19 +4,10 @@ import re
 
 class Field:
     def __init__(self, value):
-        self._value = None
         self.value = value
 
-    @property
-    def value(self)->str:
-        return self._value
-
-    @value.setter
-    def value(self, value: str)-> None:
-        self._value = value
-
     def __str__(self):
-        return str(self._value)
+        return str(self.value)
 
 class Name(Field):
     def __init__(self, name: str)-> None:
