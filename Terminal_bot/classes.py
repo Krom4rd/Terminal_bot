@@ -88,7 +88,21 @@ class Contact():
             return False
 
 class Address_book(UserDict):
-    pass
+    def __init__(self):
+        super().__init__()
+
+    def add_contact(self, contact: Contact):
+        self.data[contact.name.value] = contact
+
+    def remove_contact(self, contact_name: str):
+        if contact_name in self.data:
+            del self.data[contact_name]
+
+    def search_contact(self, contact_name: str):
+        if contact_name in self.data:
+            return self.data[contact_name]
+        else:
+            return None
 
 class Note(Field):
     def __init__(self, note: str):
