@@ -64,7 +64,6 @@ class Birthday(Field):
                     self._value = datetime.strptime(value, '%d-%m-%Y').date()
                 except ValueError:
                 # Якщо жоден з форматів не підходить, пишемо про помилку
-class-Birthday
                     print("Значення повинно бути в форматі dd.mm.yyyy або dd-mm-yyyy")
 
 class Contact():
