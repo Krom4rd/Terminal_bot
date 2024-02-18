@@ -5,8 +5,9 @@ import pickle
 
 cache = [Address_book(),Note()]
 
-def greating():
-    pass
+
+def greeting():
+    return "Вітаю! Ласкаво просимо до вашого персонального помічника."
 
 def add_contact():
     pass
