@@ -35,21 +35,21 @@ class Address(Field):
         pass
 
 class Birthday(Field):
-    def __init__(self, value):
-        super().__init__(value)
-        self.validate()
-
-    def validate(self):
-        try:
-            # Спроба перетворити введене значення на об'єкт date
-            self._value = datetime.strptime(self._value, '%d.%m.%Y').date()
-        except ValueError:
+    @Field.value.setter
+    def value(self, value: str = None):
+        if value == None:
+            self._value = ''
+        else:
             try:
-                # Якщо перша спроба не вдалася, то спробуємо інший формат дати
-                self._value = datetime.strptime(self._value, '%d-%m-%Y').date()
+            # Спроба перетворити введене значення на об'єкт date
+                self._value = datetime.strptime(value, '%d.%m.%Y').date()
             except ValueError:
+                try:
+                # Якщо перша спроба не вдалася, то спробуємо інший формат дати
+                    self._value = datetime.strptime(value, '%d-%m-%Y').date()
+                except ValueError:
                 # Якщо жоден з форматів не підходить, пишемо про помилку
-                return "Значення повинно бути в форматі dd.mm.yyyy або dd-mm-yyyy"
+                    return "Значення повинно бути в форматі dd.mm.yyyy або dd-mm-yyyy"
 
 class Contact():
     def __init__(self, name: Name, phone: Phone = None, email: Email = None, address: Address = None, birthday: Birthday = None):
