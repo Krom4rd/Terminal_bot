@@ -47,7 +47,7 @@ class Email(Field):
 
 class Address(Field):
     def __init__(self, address: str):
-        pass
+        super().__init__(address)
 
 class Birthday(Field):
     @Field.value.setter
