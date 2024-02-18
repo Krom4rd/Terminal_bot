@@ -67,7 +67,16 @@ class Birthday(Field):
 
 class Contact():
     def __init__(self, name: Name, phone: Phone = None, email: Email = None, address: Address = None, birthday: Birthday = None):
-        pass
+        self.name = name
+        
+        if phone is not None:
+            self.phone = Phone(phone)
+        if email is not None:
+            self.email = Email(email)
+        if address is not None:
+            self.address = Address(address)
+        if birthday is not None:
+            self.birthday = Birthday(birthday)
     
     def add_phone(self, phone_value):
         phone = Phone(phone_value)
