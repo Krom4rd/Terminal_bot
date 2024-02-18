@@ -46,6 +46,14 @@ class Birthday(Field):
 class Contact():
     def __init__(self, name: Name, phone: Phone = None, email: Email = None, address: Address = None, birthday: Birthday = None):
         pass
+    
+    def add_phone(self, phone_value):
+        phone = Phone(phone_value)
+        if phone.validate():
+            self.phones.append(phone)
+            return True
+        else:
+            return False
 
 class Address_book(UserDict):
     pass
