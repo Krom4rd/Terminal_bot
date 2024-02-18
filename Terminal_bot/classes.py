@@ -4,31 +4,36 @@ import re
 
 class Field:
     def __init__(self, value):
-        self._value = None
         self.value = value
 
-    @property
-    def value(self)->str:
-        return self._value
-
-    @value.setter
-    def value(self, value: str)-> None:
-        self._value = value
-
     def __str__(self):
-        return str(self._value)
+        return str(self.value)
 
 class Name(Field):
     def __init__(self, name: str)-> None:
         super().__init__(name.lower().capitalize())
 
 class Phone(Field):
-    def __init__(self, number: str):
-        pass
+    def __init__(self, value):
+        super().__init__(value)
+        if not self.validate_number(value):
+            raise ValueError("Invalid phone number format. Try again!")
 
+    def validate_number(self, number):
+        return len(number) == 10 and number.isdigit()
+    
 class Email(Field):
     def __init__(self, mail: str):
-        pass
+        super().__init__(mail)
+        if not self.validate_email(mail):
+            raise ValueError("Invalid email format. Try again!")
+
+    def validate_email(self, mail):
+        pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+        if re.match(pattern, mail):
+            return True
+        else:
+            return False
 
 class Address(Field):
     def __init__(self, address: str):
