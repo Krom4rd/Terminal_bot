@@ -40,8 +40,16 @@ class Birthday(Field):
         self.validate()
 
     def validate(self):
-        if not isinstance(self.value, datetime):
-            raise ValueError("Помилка: Значення повинно бути об'єктом datetime")
+        try:
+            # Спроба перетворити введене значення на об'єкт date
+            self._value = datetime.strptime(self._value, '%d.%m.%Y').date()
+        except ValueError:
+            try:
+                # Якщо перша спроба не вдалася, то спробуємо інший формат дати
+                self._value = datetime.strptime(self._value, '%d-%m-%Y').date()
+            except ValueError:
+                # Якщо жоден з форматів не підходить, пишемо про помилку
+                return "Значення повинно бути в форматі dd.mm.yyyy або dd-mm-yyyy"
 
 class Contact():
     def __init__(self, name: Name, phone: Phone = None, email: Email = None, address: Address = None, birthday: Birthday = None):
