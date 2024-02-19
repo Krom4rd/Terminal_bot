@@ -7,7 +7,7 @@ def value_error_decorator(inner):
         try:
             return inner(*args)
         except ValueError:
-            return 'ValueError'
+            print('ValueError')
     return wraper
 
 class Field:
@@ -72,7 +72,7 @@ class Birthday(Field):
                     self._value = datetime.strptime(value, '%d-%m-%Y').date()
                 except ValueError:
                 # Якщо жоден з форматів не підходить, пишемо про помилку
-                    print("Значення повинно бути в форматі dd.mm.yyyy або dd-mm-yyyy")
+                    print("Date of birthday must be in dd.mm.yyyy or dd-mm-yyyy format")
 
 class Contact():
     def __init__(self, name: Name, phone: Phone = None, email: Email = None, address: Address = None, birthday: Birthday = None):
@@ -91,34 +91,37 @@ class Contact():
             self.birthday = Birthday(birthday)
     
     @value_error_decorator
-    def add_phone(self, phone_value):
-        phone = Phone(phone_value)
-        if phone != None:
-            self.phones.append(phone)
+    def add_phone(self, phone_value: str = None):
+        new_phone = Phone(phone_value)
+        if new_phone is not None:
+            self.phones.append(new_phone)
+            print(f'Phone: {phone_value} for {self.name} added')
             return True
         else:
             return False
 
     @value_error_decorator    
-    def edit_phone(self, old_phone, new_phone):
+    def edit_phone(self, old_phone: str = None, new_phone: str = None):
         for phone in self.phones:
-            if phone.value == old_phone:
-                new_phone_check = Phone(new_phone)
-                new_phone_check.validate(new_phone)   # валідація нового телефону
-                phone.value = new_phone
-                return       
-        return ValueError(f'{old_phone} not exist')
+            if phone is not old_phone:
+                print(f'{old_phone} not exist')
+                return
+            new_phone_check = Phone(new_phone)  # валідація нового телефону
+            if new_phone_check:
+                phone = new_phone
+                print(f'Contact {self.name} changed his phone number from {old_phone} to {new_phone}')
     
     @value_error_decorator
-    def remove_phone(self, phone_number):
+    def remove_phone(self, phone_number: str = None):
         for element in self.phones:
             if element.value == phone_number:
                 self.phones.remove(element)
-                return f'phone: {phone_number} deleted'
-            return f'phone {phone_number} not found'
+                print(f'phone: {phone_number} deleted')
+                return    
+        print(f'phone {phone_number} not found')
 
     @value_error_decorator
-    def find_phone(self, phone_number):
+    def find_phone(self, phone_number: str = None):
         for phone in self.phones:
             if phone.value == phone_number:
                 return phone
@@ -129,21 +132,24 @@ class Contact():
         new_birthday = Birthday(birthday)
         if new_birthday is not None:
             self.birthday = new_birthday
+            print(f'Birthday: {new_birthday} for {self.name} added')
 
     @value_error_decorator
-    def add_address(self, address):
+    def add_address(self, address: str = None):
         new_address = Address(address)
         if new_address is not None:
             self.address = new_address
+            print(f'Address: {new_address} for {self.name} added')
 
     @value_error_decorator
-    def add_email(self, email):
+    def add_email(self, email: str = None):
         new_email = Email(email)
         if new_email is not None:
             self.email = new_email
+            print(f'Email: {new_email} for {self.name} added')
 
     @value_error_decorator
-    def edit_email(self, email):
+    def edit_email(self, email: str = None):
         new_email = Email(email)
         if new_email is not None:
             old_email = self.email
@@ -151,12 +157,28 @@ class Contact():
             print(f'Contact {self.name} change email from {old_email} to {self.email}')
 
     def __str__(self):
-        return f"Contact name: {self.name}, phones: {'; '.join(p.value for p in self.phones)}" 
+        string = f"Contact name: {self.name}"
+        if self.phones:
+            string += f', phones: {'; '.join(p.value for p in self.phones)}'
+        try:
+            if self.email :
+                string += f', email: {self.email}'
+        except AttributeError:
+            pass
+        try:
+            if self.address:
+                string += f', address: {self.address}'
+        except AttributeError:
+            pass
+        try:
+            if self.birthday:
+                string += f', {self.birthday}'
+        except AttributeError:
+            pass
+        return string
+        
 
 class Address_book(UserDict):
-    def __init__(self):
-        super().__init__()
-
     def add_contact(self, contact: Contact):
         self.data[contact.name] = contact
 
@@ -203,9 +225,9 @@ class Address_book(UserDict):
     def __str__(self):
 
         if not self.data:
-            return 'Книга контактів пуста'
+            print('The contact book is empty')
         else:
-            self.result = 'У книзі контактів наступні контакти:'
+            self.result = 'Сontacts that are in the contact book:'
             for record in self.data:
                 self.result += f'\n{str(self.data[record])}'
             self.result += '\n'
@@ -223,4 +245,3 @@ class Tag(Field):
 class Note_book(UserDict):
     def __init__(self, note: Note, tag: Tag = None):
         pass
-
