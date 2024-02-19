@@ -20,7 +20,7 @@ dict_suffixes_reverse = {}
 for category, suffixes in dict_suffixes.items():
     temp_dict = dict.fromkeys(suffixes, category)
     dict_suffixes_reverse.update(temp_dict)
-    
+
 # normalize
 
 UKRAINIAN_SYMBOLS = 'абвгдеєжзиіїйклмнопрстуфхцчшщьюя'
@@ -69,7 +69,7 @@ def scan(folder):
                     OTHER.append(new_name)
 
 #main
-                
+
 def handle_file(path, root_folder, dist):
     target_folder = root_folder / dist
     target_folder.mkdir(parents=True, exist_ok=True)  # Створює папку, якщо не існує
@@ -130,3 +130,4 @@ if __name__ == '__main__':
 
     folder = Path(path)
     sorter(folder.resolve())
+
