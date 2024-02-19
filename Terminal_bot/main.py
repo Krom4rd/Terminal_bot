@@ -22,8 +22,9 @@ def input_error(inner):
             return 'ArithmeticError'
     return wrap
 
-def greating():
-    pass
+
+def greeting():
+    return "Вітаю! Ласкаво просимо до вашого персонального помічника."
 
 def add_contact():
     pass
