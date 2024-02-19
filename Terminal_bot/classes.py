@@ -77,9 +77,12 @@ class Birthday(Field):
 class Contact():
     def __init__(self, name: Name, phone: Phone = None, email: Email = None, address: Address = None, birthday: Birthday = None):
         self.name = name
-        
+        self.phones = []
+
         if phone is not None:
-            self.phone = Phone(phone)
+            new_phone = Phone(phone)
+            if new_phone:
+                self.phones.append(new_phone)
         if email is not None:
             self.email = Email(email)
         if address is not None:
@@ -146,15 +149,16 @@ class Contact():
             old_email = self.email
             self.email = new_email
             print(f'Contact {self.name} change email from {old_email} to {self.email}')
-        
-    
+
+    def __str__(self):
+        return f"Contact name: {self.name}, phones: {'; '.join(p.value for p in self.phones)}" 
 
 class Address_book(UserDict):
     def __init__(self):
         super().__init__()
 
     def add_contact(self, contact: Contact):
-        self.data[contact.name.value] = contact
+        self.data[contact.name] = contact
 
     def remove_contact(self, contact_name: str):
         if contact_name in self.data:
@@ -165,6 +169,48 @@ class Address_book(UserDict):
             return self.data[contact_name]
         else:
             return None
+        
+    iter_records = 5
+
+    def __iter__(self):
+        self.idx = 0
+        self.page = 0
+        self.list_of_records = [record for record in self.data]
+
+        return self
+
+    def __next__(self):
+
+        if self.idx >= len(self.data):
+            raise StopIteration
+        self.count_records = 1
+        self.page += 1
+        self.result = f'Page: {self.page}'
+
+        while self.count_records <= self.iter_records:
+            if self.idx >= len(self.data):
+                return self.result
+            
+            self.result += f'\n{self.data[self.list_of_records[self.idx]]}'
+            self.count_records += 1
+            self.idx += 1
+                
+        return self.result
+    
+    def set_iter_records(self, iter_records):
+        self.iter_records = iter_records
+   
+    def __str__(self):
+
+        if not self.data:
+            return 'Книга контактів пуста'
+        else:
+            self.result = 'У книзі контактів наступні контакти:'
+            for record in self.data:
+                self.result += f'\n{str(self.data[record])}'
+            self.result += '\n'
+
+            return self.result
 
 class Note(Field):
     def __init__(self, note: str):
