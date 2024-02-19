@@ -1,16 +1,60 @@
-from classes import Address_book, Contact, Note
+from classes import Address_book, Contact
 
 import pathlib
 import pickle
 
-cache = [Address_book(),Note()]
+cache = [Address_book()]
+
+# Функція декоратор для обробки помилок
+def input_error(inner):
+    def wrap(*args):
+        try:
+            return inner(*args)
+        except IndexError:
+            return "IndexError"
+        except ValueError:
+            return "ValueError"
+        except KeyError:
+            return "KeyError"
+        except TypeError:
+            return "TypeError"
+        except ArithmeticError:
+            return 'ArithmeticError'
+    return wrap
 
 
 def greeting():
     return "Вітаю! Ласкаво просимо до вашого персонального помічника."
 
+def Capitalize(text):
+    # Написаня кожного слова з великої літери
+    return ' '.join(word.capitalize() for word in text.split())
+
 def add_contact():
-    pass
+    # Збирання інформації про користувача
+    name = input("Enter the name: ")
+    phone = input("Enter the phone number: ")
+    email = input("Enter the email address: ")
+    address = input("Enter the address: ")
+    birthday = input("Enter the birthday (format: dd.mm.yyyy): ")
+
+    
+    capitalized_name = Capitalize(name)
+
+    # Створення екземплярів необхідних класів
+    contact_name = Name(capitalized_name)
+    contact_phone = Phone(phone)
+    contact_email = Email(email)
+    contact_address = Address(address)
+    contact_birthday = Birthday(birthday)
+
+    # Створення "Контакт" із зібраною інформацією
+    new_contact = Contact(name=contact_name, phone=contact_phone, email=contact_email, address=contact_address, birthday=contact_birthday)
+
+    # Додавання нового контакту до адресної книги
+    address_book.add_contact(new_contact)
+
+    return f"Контакт {capitalized_name} успішно додано до адресної книги."
 
 def change_number():
     pass
@@ -83,7 +127,7 @@ def return_cache():
 
 # Словник ключ = Функція, значення= Ключові слова для запуску функцій
 COMMANDS = {
-    greating: 'hello',
+    greeting: 'hello',
     add_contact: 'add',
     change_number: 'change',
     phone_output: 'phone',
@@ -94,11 +138,11 @@ COMMANDS = {
     add_birthday: 'birthday',
     days_to_birthday: 'days to birthday',
     add_note: 'note',
-    delete_note: 'del_note',
+    delete_note: 'del note',
     show_all_notes: 'show all notes',
     search_note: 'snote',
     add_tag: 'tag',
-    delete_tag: 'del_tag',
+    delete_tag: 'del tag',
     sorting: 'sorting'
 }
 
