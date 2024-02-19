@@ -135,11 +135,29 @@ class Contact():
             print(f'Birthday: {new_birthday} for {self.name} added')
 
     @value_error_decorator
+    def days_to_birthday(self):
+        today = datetime.now()
+        bday_date = datetime.strptime(self.value, '%d-%m-%Y')
+        bday_upgreat = datetime(bday_date.day, bday_date.month, today.year)
+        if today > bday_upgreat:
+            bday_upgreat = datetime(bday_date.day, bday_date.month, today.year + 1)
+        days_to_next_bday = (bday_upgreat - today).days
+        return days_to_next_bday
+
+    @value_error_decorator
     def add_address(self, address: str = None):
         new_address = Address(address)
         if new_address is not None:
             self.address = new_address
             print(f'Address: {new_address} for {self.name} added')
+
+    @value_error_decorator
+    def edit_address(self, old_address, new_address):
+        if self.address == old_address:
+            self.address = new_address
+            return f'address {old_address} is changed to {new_address}'
+        else:
+            return f'address {old_address} not found'
 
     @value_error_decorator
     def add_email(self, email: str = None):
