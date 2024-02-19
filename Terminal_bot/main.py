@@ -100,7 +100,7 @@ def return_cache():
 
 # Словник ключ = Функція, значення= Ключові слова для запуску функцій
 COMMANDS = {
-    greating: 'hello',
+    greeting: 'hello',
     add_contact: 'add',
     change_number: 'change',
     phone_output: 'phone',
