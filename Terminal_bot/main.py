@@ -35,7 +35,7 @@ def change_number():
 def phone_output():
     pass
 
-def show_all():
+def about():
     commands = [['Command', 'Parameters', 'Description'],
                    ['all', '', 'list all information about users'],
                    ['add', '[Name]', 'create new user [Name] in adress book'],
@@ -73,6 +73,9 @@ def show_all():
     print(help_string)
 
 def delete():
+    pass
+
+def show_all():
     pass
 
 def add_birthday():
