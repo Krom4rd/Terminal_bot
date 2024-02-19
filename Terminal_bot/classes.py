@@ -2,6 +2,14 @@ from datetime import date, datetime
 from collections import UserDict
 import re
 
+def value_error_decorator(inner):
+    def wraper(*args):
+        try:
+            return inner(*args)
+        except ValueError:
+            return 'ValueError'
+    return wraper
+
 class Field:
     def __init__(self, value):
         self._value = None
@@ -79,6 +87,7 @@ class Contact():
         if birthday is not None:
             self.birthday = Birthday(birthday)
     
+    @value_error_decorator
     def add_phone(self, phone_value):
         phone = Phone(phone_value)
         if phone != None:
@@ -86,7 +95,8 @@ class Contact():
             return True
         else:
             return False
-        
+
+    @value_error_decorator    
     def edit_phone(self, old_phone, new_phone):
         for phone in self.phones:
             if phone.value == old_phone:
@@ -96,6 +106,7 @@ class Contact():
                 return       
         return ValueError(f'{old_phone} not exist')
     
+    @value_error_decorator
     def remove_phone(self, phone_number):
         for element in self.phones:
             if element.value == phone_number:
@@ -103,11 +114,39 @@ class Contact():
                 return f'phone: {phone_number} deleted'
             return f'phone {phone_number} not found'
 
+    @value_error_decorator
     def find_phone(self, phone_number):
         for phone in self.phones:
             if phone.value == phone_number:
                 return phone
         return None
+    
+    @value_error_decorator
+    def add_birthday(self, birthday: str = None):
+        new_birthday = Birthday(birthday)
+        if new_birthday is not None:
+            self.birthday = new_birthday
+
+    @value_error_decorator
+    def add_address(self, address):
+        new_address = Address(address)
+        if new_address is not None:
+            self.address = new_address
+
+    @value_error_decorator
+    def add_email(self, email):
+        new_email = Email(email)
+        if new_email is not None:
+            self.email = new_email
+
+    @value_error_decorator
+    def edit_email(self, email):
+        new_email = Email(email)
+        if new_email is not None:
+            old_email = self.email
+            self.email = new_email
+            print(f'Contact {self.name} change email from {old_email} to {self.email}')
+        
     
 
 class Address_book(UserDict):
