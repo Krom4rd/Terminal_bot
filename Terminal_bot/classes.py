@@ -86,6 +86,29 @@ class Contact():
             return True
         else:
             return False
+        
+    def edit_phone(self, old_phone, new_phone):
+        for phone in self.phones:
+            if phone.value == old_phone:
+                new_phone_check = Phone(new_phone)
+                new_phone_check.validate(new_phone)   # валідація нового телефону
+                phone.value = new_phone
+                return       
+        return ValueError(f'{old_phone} not exist')
+    
+    def remove_phone(self, phone_number):
+        for element in self.phones:
+            if element.value == phone_number:
+                self.phones.remove(element)
+                return f'phone: {phone_number} deleted'
+            return f'phone {phone_number} not found'
+
+    def find_phone(self, phone_number):
+        for phone in self.phones:
+            if phone.value == phone_number:
+                return phone
+        return None
+    
 
 class Address_book(UserDict):
     pass

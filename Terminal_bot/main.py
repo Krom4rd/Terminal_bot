@@ -1,9 +1,26 @@
-from classes import Address_book, Contact, Note
+from classes import Address_book, Contact
 
 import pathlib
 import pickle
 
-cache = [Address_book(),Note()]
+cache = [Address_book()]
+
+# Функція декоратор для обробки помилок
+def input_error(inner):
+    def wrap(*args):
+        try:
+            return inner(*args)
+        except IndexError:
+            return "IndexError"
+        except ValueError:
+            return "ValueError"
+        except KeyError:
+            return "KeyError"
+        except TypeError:
+            return "TypeError"
+        except ArithmeticError:
+            return 'ArithmeticError'
+    return wrap
 
 def greating():
     pass
@@ -93,11 +110,11 @@ COMMANDS = {
     add_birthday: 'birthday',
     days_to_birthday: 'days to birthday',
     add_note: 'note',
-    delete_note: 'del_note',
+    delete_note: 'del note',
     show_all_notes: 'show all notes',
     search_note: 'snote',
     add_tag: 'tag',
-    delete_tag: 'del_tag',
+    delete_tag: 'del tag',
     sorting: 'sorting'
 }
 
