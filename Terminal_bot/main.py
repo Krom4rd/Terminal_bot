@@ -66,7 +66,15 @@ def show_all():
     pass
 
 def delete():
-    pass
+    contact_name = input("Введіть ім'я контакту, який потрібно видалити: ")
+    deleted_contact = address_book.search_contact(contact_name)
+    
+    if deleted_contact:
+        address_book.remove_contact(contact_name)
+        return f"Контакт {contact_name} успішно видалено з адресної книги."
+    else:
+        return f"Контакт {contact_name} не знайдено в адресной книзі."
+
 
 def add_birthday():
     pass
@@ -87,7 +95,15 @@ def note_output():
     pass
 
 def delete_note():
-    pass
+    note_id = input("Введіть нотаток, який потрібно видалити: ")
+    # Якщо в class Note_book є метод для видалення нотаток
+    deleted_note = note_book.remove_note(note_id)
+
+    if deleted_note:
+        return f"Note with ID {note_id} успішно видалено із записної книжки."
+    else:
+        return f"Note with ID {note_id} не знайдено в записній книзі."
+
 
 def show_all_notes():
     pass
@@ -102,7 +118,16 @@ def add_tag():
     pass
 
 def delete_tag():
-    pass
+    tag_name = input("Введіть назву тегу, який потрібно видалити: ")
+    # Якщо в class Note_book є метод для видалення тегів
+    deleted_tag = note_book.remove_tag(tag_name)
+
+    if deleted_tag:
+        return f"Тег {tag_name} успішно видалено із записної книжки."
+    else:
+        return f"Тег {tag_name} не знайдено в записній книзі."
+
+
 
 def about():
     pass
