@@ -1,4 +1,4 @@
-from datetime import date, datetime
+from datetime import datetime
 from collections import UserDict
 import re
 
@@ -29,6 +29,10 @@ class Field:
 class Name(Field):
     def __init__(self, name: str)-> None:
         super().__init__(name.lower().capitalize())
+        self.name = name.lower().capitalize()
+    def __str__(self):
+        return super().__str__()
+
 
 class Phone(Field):
     def __init__(self, value):
@@ -65,11 +69,11 @@ class Birthday(Field):
         else:
             try:
             # Спроба перетворити введене значення на об'єкт date
-                self._value = datetime.strptime(value, '%d.%m.%Y').date()
+                self._value = datetime.strptime(value, '%d.%m.%Y')
             except ValueError:
                 try:
                 # Якщо перша спроба не вдалася, то спробуємо інший формат дати
-                    self._value = datetime.strptime(value, '%d-%m-%Y').date()
+                    self._value = datetime.strptime(value, '%d-%m-%Y')
                 except ValueError:
                 # Якщо жоден з форматів не підходить, пишемо про помилку
                     print("Date of birthday must be in dd.mm.yyyy or dd-mm-yyyy format")
@@ -135,11 +139,31 @@ class Contact():
             print(f'Birthday: {new_birthday} for {self.name} added')
 
     @value_error_decorator
+    def days_to_birthday(self):
+        if self.birthday is None:
+            return
+        today = datetime.now()
+        bday_date = self.birthday.value
+        print(bday_date)
+        if today > bday_date:
+            bday_date = datetime(day=bday_date.day, month=bday_date.month, year=today.year + 1)
+        days_to_next_bday = (bday_date - today).days
+        return days_to_next_bday
+
+    @value_error_decorator
     def add_address(self, address: str = None):
         new_address = Address(address)
         if new_address is not None:
             self.address = new_address
             print(f'Address: {new_address} for {self.name} added')
+
+    @value_error_decorator
+    def edit_address(self, old_address, new_address):
+        if self.address == old_address:
+            self.address = new_address
+            print(f'address {old_address} is changed to {new_address}')
+        else:
+            print(f'address {old_address} not found')
 
     @value_error_decorator
     def add_email(self, email: str = None):
@@ -155,27 +179,34 @@ class Contact():
             old_email = self.email
             self.email = new_email
             print(f'Contact {self.name} change email from {old_email} to {self.email}')
-
+    
     def __str__(self):
-        string = f"Contact name: {self.name}"
+        self.contact_values = []
+        self.contact_values.append(self.name)
         if self.phones:
-            string += f', phones: {'; '.join(p.value for p in self.phones)}'
+            self.contact_values.append("; ".join(p.value for p in self.phones))
+        else:
+            self.contact_values.append(' ')
         try:
             if self.email :
-                string += f', email: {self.email}'
+                self.contact_values.append(self.email.value)
         except AttributeError:
-            pass
+            self.contact_values.append(' ')
         try:
             if self.address:
-                string += f', address: {self.address}'
+                self.contact_values.append(self.address.value)
         except AttributeError:
-            pass
+            self.contact_values.append(' ')
         try:
             if self.birthday:
-                string += f', {self.birthday}'
+                self.contact_values.append('' + datetime.strftime(self.birthday.value,'%d-%m-%Y'))
         except AttributeError:
-            pass
-        return string
+            self.contact_values.append(' ')
+        dashes = "{0:<14} + {1:<50} + {2:^32} + {3:32} + {4:18}".format("-" * 14, "-" * 50, "-" * 32, "-" * 32, "-" * 18)
+        help_string = ''
+        help_string += f'{self.contact_values[0]:^14} | {self.contact_values[1]:^50} | {self.contact_values[2]:^32} | {self.contact_values[3]:^32} | {self.contact_values[4]:^18}\n'
+        help_string += dashes
+        return(help_string)
         
 
 class Address_book(UserDict):
@@ -191,7 +222,7 @@ class Address_book(UserDict):
             return self.data[contact_name]
         else:
             return None
-        
+    
     iter_records = 5
 
     def __iter__(self):
@@ -208,6 +239,8 @@ class Address_book(UserDict):
         self.count_records = 1
         self.page += 1
         self.result = f'Page: {self.page}'
+        self.result += f'\n{'Name':^14} | {'Phone':^50} | {'Email':^32} | {'Address':^32} | {'Birthday':^18}\n'
+        self.result += "{0:<14} + {1:<50} + {2:^32} + {3:32} + {4:18}".format("-" * 14, "-" * 50, "-" * 32, "-" * 32, "-" * 18)
 
         while self.count_records <= self.iter_records:
             if self.idx >= len(self.data):
@@ -235,13 +268,144 @@ class Address_book(UserDict):
             return self.result
 
 class Note(Field):
-    def __init__(self, note: str):
-        pass
+    @value_error_decorator
+    def __init__(self, note: str = None, title: str = None, tag: str = None):
+        self.title = list()
+        self.tag = list()
+        if tag and len(tag) > 30:
+            print('The length of the tag should not exceed 30 characters')
+        elif tag:
+            self.tag.append(tag.lower().capitalize())
+        if title is not None:
+            self.title.append(title.capitalize())
+        if note is not None and title is None:
+            word_list = note.split()
+            self.title.append(word_list[0].capitalize())
+            if len(word_list) > 1:
+                self.note = word_list[1].capitalize()
+            else:
+                self.note = word_list[0].capitalize()
+        elif note is not None:
+            self.note = note.capitalize()
+        if self.title:
+            print(f'New note with title {str(*self.title)} created')
+    
+    @value_error_decorator
+    def add_tag(self, tag):
+        if tag and len(tag) > 30:
+            print('The length of the tag should not exceed 30 characters')
+        elif tag:
+            self.tag.append(tag.lower().capitalize())
 
-class Tag(Field):
-    def __init__(self, tag: str):
-        pass
+    @value_error_decorator
+    def remove_tag_in_note(self, tag = None):
+        if self.tag and tag in self.tag:
+            self.tag.pop(self.tag.index(tag))
+            return f'Tag {tag} removed'
+        elif self.tag and tag not in self.tag:
+            return f'Тo such tag: {tag} exists in this note,\n here is a list of tags for this note {str(*self.tag)}'
+        elif self.tag and tag is None:
+            self.tag = []
 
-class Note_book(UserDict):
-    def __init__(self, note: Note, tag: Tag = None):
+    def __str__(self):
+        try:
+            if self.tag:
+                return f'Title: {", ".join(i for i in self.title)}\nTag: {", ".join(i for i in self.tag)}\nNote:\n{self.note}\n'
+        except AttributeError:
+            pass
+        return f'Title: {", ".join(i for i in self.title)}\nNote:\n{self.note}\n'
+        
+class Note_book():
+    def __init__(self) -> None:
+        self.data = []
+
+    def tag_checker(tag: str):
+        if tag is None:
+            return
+        if len(tag) > 30:
+            print('The length of the tag should not exceed 30 characters')
+        else:
+            return tag.lower().capitalize()
+        
+    def add_note(self,  note: str = None, title: str = None, tag: str = None,):
+        new_note = Note(note, title, tag)
+        if new_note:
+            self.data.append(new_note)
+
+    def search_note_with_tag_or_title(self, word) -> list:
+        result = []
+        for item in self.data:
+            print(item.tag,item.title)
+            if word.lower().capitalize() in item.tag or word.lower().capitalize() in item.title:
+                result.append(item)
+        if result:
+            return result
+        return f'No notes found for this tag: {word}'
+    
+    def search_word_in_note(self, word) -> list:
+        result = []
+        for item in self.data:
+            if item.note.lower().find(word.lower()) != -1:
+                result.append(item)
+        if result:
+            return result
+        return f'No notes found for this word: {word}'
+    
+    def remove_tag_for_all_notes(self, tag):
+        if tag is not None:
+            note_list = self.search_note_with_tag_or_title(tag)
+        if note_list is str():
+            return note_list
+        else:
+            for note in note_list:
+                note.remove_tag_in_note(tag)
+                return f'Tag removed for all notes'
+
+    def edit_note():
         pass
+    iter_records = 1
+
+    def __iter__(self):
+        self.idx = 0
+        self.page = 0
+        self.list_of_records = [record for record in self.data]
+
+        return self
+
+    def __next__(self):
+
+        if self.idx >= len(self.data):
+            raise StopIteration
+        self.count_records = 1
+        self.page += 1
+        self.result = f'Note: {self.page}'
+
+        while self.count_records <= self.iter_records:
+            if self.idx >= len(self.data):
+                return self.result
+            
+            self.result += f'\n{self.data[self.list_of_records[self.idx]]}'
+            self.count_records += 1
+            self.idx += 1
+                
+        return self.result
+    
+    def set_iter_records(self, iter_records):
+        self.iter_records = iter_records
+   
+    def __str__(self):
+
+        if not self.data:
+            print('The note book is empty')
+        else:
+            self.result = 'Notes that are in the note book:'
+            index = 0
+
+            for record in self.data:
+                self.result += f'\n{self.data[index]}'
+                index += 1
+            self.result += '\n'
+
+            return self.result
+
+
