@@ -1,9 +1,10 @@
-from classes import Address_book, Contact, Birthday
+from classes import Address_book, Contact, Birthday, Note_book, Note
 
 import pathlib
 import pickle
 
 cache = [Address_book()]
+note_book = Note_book()
 
 # Функція декоратор для обробки помилок
 def input_error(inner):
@@ -134,10 +135,21 @@ def note():
     pass
 
 def add_note():
-    pass
+    title = input("Введіть назву нотатки: ")  # якщо в нас буде :)
+    content = input("Введіть вміст нотатки: ")
+    tags = input("Введіть теги, розділені комами: ").split(",") # якщо буде декілька
+    note = Note(title, content, tags) 
+    note_book.add_note(note)
+    return "Нотатка створена!"
+    
 
-def change_note():
-    pass
+def change_note(): # може таки по індексу простіше буде?
+    note_index = int(input("Введіть номер (індекс) нотатки яку необхідно змінити: "))
+    new_title = input(f"Введіть нову назву для нотатки: ")
+    new_content = input(f"Введіть новий вміст нотатки: ")
+    new_tags = input(f"Введіть нові теги, розділені комою: ")
+    result = note_book.change_note((int(note_index) - 1), new_title, new_content, new_tags)
+    return result
 
 def note_output():
     pass
