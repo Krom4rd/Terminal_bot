@@ -1,4 +1,4 @@
-from classes import Address_book, Contact
+from classes import Address_book, Contact, Birthday
 
 import pathlib
 import pickle
@@ -62,8 +62,45 @@ def change_number():
 def phone_output():
     pass
 
-def show_all():
+def show_all_contacts():
     pass
+
+def show_all():
+    commands = [['Command', 'Parameters', 'Description'],
+                   ['all', '', 'list all information about users'],
+                   ['add', '[Name]', 'create new user [Name] in adress book'],
+                   ['edit', '[Contact_id] [new_Name]', 'edit name of [Contact_id] to [new_Name]'],
+                   ['del', '[Contact_id]', 'remove user [Contact_id] from adress book'],
+                   ['add-phone', '[Contact_id] [Phone]', 'add to user [Contact_id] a [Phone]'],
+                   ['edit-phone', '[Contact_id] [Phone] [new_Phone]', 'replace for user [Contact_id] a [Phone] by [new_Phone]'],
+                   ['del-phone', '[Name] [Phone]', 'remove phone [Phone] from user [Name]'],
+                   ['add-email', '[Contact_id] [Email]', 'add to user [Contact_id] an [Email]'],
+                   ['edit-email', '[Contact_id] [Email] [new_Email]', 'replace for user [Contact_id] an [Email] by [new_Email]'],
+                   ['del-email', '[Contact_id] [Email]', 'remove email [Email] from user [Contact_id]'],
+                   ['address', '[Contact_id] [Address]', 'set for user [Name] an address [Address]'],
+                   ['del-address', '[Contact_id]', 'remove address from [Contact_id]'],
+                   ['birthday', '[Contact_id] [Birthday]', 'set for user [Contact_id] a birthday at [Birthday]'],
+                   ['del-birthday', '[Contact_id]', 'remove birthday from [Contact_id]'],
+                   ['find', '[search]', 'list [search] data in Name, Phones, Address, Emails, Birthdays. [search] must be 2 symbols min'],
+                   ['next-birthdays', '[int]', 'shows upcoming birthdays if exist in period from today till [int] days'],
+                   ['note', '', 'Add a note to Note Book'],
+                   ['all-notes', '', 'list all notes'],
+                   ['edit-note', '[Note_id] [Note]', 'edit text of [Note_id] Note'],
+                   ['del-note', '[Note_id]', 'Remove [Note_id] note from Note Book'],
+                   ['add-tag', '[Note_id] [Tag]', 'add [Tag] to note [Note_id]'],
+                   ['del-tag', '[Note_id] [Tag]', 'remove [Tag] from note [Note_id]'],
+                   ['find-notes', '[searchstring]', 'list all Notes with [searchstring] data in note and tags.[searchstring] must be 2 symbols minimum'],
+                   ['find-tags', '[searchstring]', 'list all Notes with [searchstring] data in tags.[searchstring] must be 2 symbols minimum'],
+                   ['sort-tag', '', 'list all Notes sorted by number of tags'],
+                   ['close, exit', '', 'exit the bot'],
+                   ['help', '', 'list all bot commands']]
+    dashes = "{0:<14} + {1:<32} + {2:^12} \n".format("-" * 14, "-" * 32, "-" * 12)
+    help_string = ''
+
+    for i in commands:
+        help_string += f'{i[0]:^14} | {i[1]:^32} | {i[2]:^12} \n'
+        help_string += dashes
+    print(help_string)
 
 def delete():
     contact_name = input("Введіть ім'я контакту, який потрібно видалити: ")
@@ -76,8 +113,19 @@ def delete():
         return f"Контакт {contact_name} не знайдено в адресной книзі."
 
 
-def add_birthday():
-    pass
+def add_birthday(book: Address_book, args: list):
+    if len(args) == 2:
+        try:
+            if int(args[0]) in book.data:
+                rec = book.data[int(args[0])]
+                rec.birthday = Birthday(args[1])
+                print('Birthday added sucessfully.')
+            else:
+                print(f'Contact id {args[0]} not found')
+        except ValueError:
+            print('Error: Date format must be: DD.MM.YYYY')
+    else:
+        print('Error: Invalid command format.')
 
 def days_to_birthday():
     pass
