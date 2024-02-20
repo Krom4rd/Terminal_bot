@@ -35,6 +35,9 @@ def change_number():
 def phone_output():
     pass
 
+def show_all_contacts():
+    pass
+
 def show_all():
     commands = [['Command', 'Parameters', 'Description'],
                    ['all', '', 'list all information about users'],
