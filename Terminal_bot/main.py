@@ -1,4 +1,4 @@
-from classes import Address_book, Contact
+from classes import Address_book, Contact, Birthday
 
 import pathlib
 import pickle
@@ -75,8 +75,19 @@ def show_all():
 def delete():
     pass
 
-def add_birthday():
-    pass
+def add_birthday(book: Address_book, args: list):
+    if len(args) == 2:
+        try:
+            if int(args[0]) in book.data:
+                rec = book.data[int(args[0])]
+                rec.birthday = Birthday(args[1])
+                print('Birthday added sucessfully.')
+            else:
+                print(f'Contact id {args[0]} not found')
+        except ValueError:
+            print('Error: Date format must be: DD.MM.YYYY')
+    else:
+        print('Error: Invalid command format.')
 
 def days_to_birthday():
     pass
