@@ -135,6 +135,25 @@ class Contact():
             print(f'Birthday: {new_birthday} for {self.name} added')
 
     @value_error_decorator
+    def days_to_birthday(self, days_left, birthday):
+        contacts_with_birthday = []
+        today = datetime.today().date()
+        for name in self.name():
+            if name.birthday:
+                birthday = name.birthday.value
+                if isinstance(birthday, str):
+                    birthday = datetime.strptime(birthday, '%Y-%m-%d').date()
+                this_year_birthday = datetime(today.year, birthday.month, birthday.day).date()
+                if this_year_birthday >= today:
+                    next_birthday = this_year_birthday
+                else:
+                    next_birthday = datetime(today.year + 1, birthday.month, birthday.day).date()
+                days_until_birthday = (next_birthday - today).days
+                if days_until_birthday == days_left:
+                    contacts_with_birthday.append(name)
+        print(f'The names of those whose birthdays is in {days_left} days: {contacts_with_birthday}')
+
+    @value_error_decorator
     def add_address(self, address: str = None):
         new_address = Address(address)
         if new_address is not None:

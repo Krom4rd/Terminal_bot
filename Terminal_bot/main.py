@@ -1,4 +1,4 @@
-from classes import Address_book, Contact
+from classes import Address_book, Contact, Birthday
 
 import pathlib
 import pickle
@@ -26,8 +26,35 @@ def input_error(inner):
 def greeting():
     return "Вітаю! Ласкаво просимо до вашого персонального помічника."
 
+def Capitalize(text):
+    # Написаня кожного слова з великої літери
+    return ' '.join(word.capitalize() for word in text.split())
+
 def add_contact():
-    pass
+    # Збирання інформації про користувача
+    name = input("Enter the name: ")
+    phone = input("Enter the phone number: ")
+    email = input("Enter the email address: ")
+    address = input("Enter the address: ")
+    birthday = input("Enter the birthday (format: dd.mm.yyyy): ")
+
+    
+    capitalized_name = Capitalize(name)
+
+    # Створення екземплярів необхідних класів
+    contact_name = Name(capitalized_name)
+    contact_phone = Phone(phone)
+    contact_email = Email(email)
+    contact_address = Address(address)
+    contact_birthday = Birthday(birthday)
+
+    # Створення "Контакт" із зібраною інформацією
+    new_contact = Contact(name=contact_name, phone=contact_phone, email=contact_email, address=contact_address, birthday=contact_birthday)
+
+    # Додавання нового контакту до адресної книги
+    address_book.add_contact(new_contact)
+
+    return f"Контакт {capitalized_name} успішно додано до адресної книги."
 
 def change_number():
     pass
@@ -71,15 +98,39 @@ def about():
         help_string += f'{i[0]:^14} | {i[1]:^32} | {i[2]:^12} \n'
         help_string += dashes
     print(help_string)
-
-def delete():
+def show_all_contacts():
     pass
 
 def show_all():
     pass
 
-def add_birthday():
+def delete():
     pass
+
+def add_birthday():
+    contact_name = input("Введіть ім'я контакту, який потрібно видалити: ")
+    deleted_contact = address_book.search_contact(contact_name)
+    
+    if deleted_contact:
+        address_book.remove_contact(contact_name)
+        return f"Контакт {contact_name} успішно видалено з адресної книги."
+    else:
+        return f"Контакт {contact_name} не знайдено в адресной книзі."
+
+
+def add_birthday(book: Address_book, args: list):
+    if len(args) == 2:
+        try:
+            if int(args[0]) in book.data:
+                rec = book.data[int(args[0])]
+                rec.birthday = Birthday(args[1])
+                print('Birthday added sucessfully.')
+            else:
+                print(f'Contact id {args[0]} not found')
+        except ValueError:
+            print('Error: Date format must be: DD.MM.YYYY')
+    else:
+        print('Error: Invalid command format.')
 
 def days_to_birthday():
     pass
@@ -97,7 +148,15 @@ def note_output():
     pass
 
 def delete_note():
-    pass
+    note_id = input("Введіть нотаток, який потрібно видалити: ")
+    # Якщо в class Note_book є метод для видалення нотаток
+    deleted_note = note_book.remove_note(note_id)
+
+    if deleted_note:
+        return f"Note with ID {note_id} успішно видалено із записної книжки."
+    else:
+        return f"Note with ID {note_id} не знайдено в записній книзі."
+
 
 def show_all_notes():
     pass
@@ -112,7 +171,16 @@ def add_tag():
     pass
 
 def delete_tag():
-    pass
+    tag_name = input("Введіть назву тегу, який потрібно видалити: ")
+    # Якщо в class Note_book є метод для видалення тегів
+    deleted_tag = note_book.remove_tag(tag_name)
+
+    if deleted_tag:
+        return f"Тег {tag_name} успішно видалено із записної книжки."
+    else:
+        return f"Тег {tag_name} не знайдено в записній книзі."
+
+
 
 def about():
     pass
