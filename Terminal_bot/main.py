@@ -56,11 +56,22 @@ def add_contact():
 
     return f"Контакт {capitalized_name} успішно додано до адресної книги."
 
-def change_number():
-    pass
-
-def phone_output():
-    pass
+def change_number(name, old_phone, new_phone): # чи треба вказати contact_name ????
+    record = cache.data.get(name)
+    if not record:
+        raise KeyError(f'Відсутній контакт {name} в адресній книзі')
+    for phone in record.phones:
+        if phone.value == old_phone:
+            phone.value = new_phone
+            return f'Ви змінили номер телефону для контакту {name}'
+    return f'Відсутній номер {old_phone} в адресній книзі'
+    
+def phone_output(name): # чи треба вказати contact_name ????
+    record = cache.data.get(name)
+    if record:
+        phones = [phone.value for phone in record.phones]
+        return phones
+    return 'Відсктній контакт в адресній книзі'
 
 def show_all():
     pass
