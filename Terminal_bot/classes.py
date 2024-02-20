@@ -135,7 +135,7 @@ class Contact():
             print(f'Birthday: {new_birthday} for {self.name} added')
 
     @value_error_decorator
-    def days_to_birthday(self, days_left, birthday):
+    def days_to_birthday(self, days_left):
         contacts_with_birthday = []
         today = datetime.today().date()
         for name in self.name():
