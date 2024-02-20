@@ -181,7 +181,13 @@ def about():
     pass
 
 def sorting():
-    pass
+    folder_path = input("Введіть шлях до папки, яку потрібно відсортувати: ")
+    sorting(folder_path)
+""" або просто
+def sorting(folder_path):
+    sorting(folder_path)
+""" 
+
 
 # Функція для запису кешу в окремий файл для зберігання данних
 def exit(data):
