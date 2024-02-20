@@ -128,7 +128,9 @@ def add_birthday(book: Address_book, args: list):
         print('Error: Invalid command format.')
 
 def days_to_birthday():
-    pass
+    days_left = int(input('Введіть кількість днів до Дня народження: '))
+    contacts = Contact()
+    return contacts.days_to_birthday(days_left)
 
 def note():
     pass
