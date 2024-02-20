@@ -62,10 +62,7 @@ def change_number():
 def phone_output():
     pass
 
-def show_all_contacts():
-    pass
-
-def show_all():
+def about():
     commands = [['Command', 'Parameters', 'Description'],
                    ['all', '', 'list all information about users'],
                    ['add', '[Name]', 'create new user [Name] in adress book'],
@@ -101,8 +98,16 @@ def show_all():
         help_string += f'{i[0]:^14} | {i[1]:^32} | {i[2]:^12} \n'
         help_string += dashes
     print(help_string)
+def show_all_contacts():
+    pass
+
+def show_all():
+    pass
 
 def delete():
+    pass
+
+def add_birthday():
     contact_name = input("Введіть ім'я контакту, який потрібно видалити: ")
     deleted_contact = address_book.search_contact(contact_name)
     
