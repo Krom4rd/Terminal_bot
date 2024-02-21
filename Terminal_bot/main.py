@@ -145,7 +145,7 @@ def about(data):
                    ['sort tag', '', 'list all Notes sorted by number of tags'],
                    ['close, exit', '', 'exit the bot'],
                    ['about', '', 'list all bot commands'],
-                   ['sort notes', '', 'sorting notes from tag']
+                   ['sort notes', '', 'sorting notes from tag'],
                    ['sorting', '[path to folder]', 'sorted files in folder by format']
                    ]
     dashes = "{0:<14} + {1:50} + {2:^32} \n".format("-" * 14, "-" * 50, "-" * 32)
