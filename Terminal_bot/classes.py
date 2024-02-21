@@ -277,7 +277,7 @@ use command "add" to added new contact')
         self.count_records = 1
         self.page += 1
         self.result = f'Page: {self.page}'
-        self.result += f'\n| {'Name':^14} | {'Phone':^50} | {'Email':^32} | {'Address':^32} | {'Birthday':^18} |\n'
+        self.result += f"\n| {'Name':^14} | {'Phone':^50} | {'Email':^32} | {'Address':^32} | {'Birthday':^18} |\n"
         self.result += "+ {0:<14} + {1:<50} + {2:^32} + {3:32} + {4:18} +".format("-" * 14, "-" * 50, "-" * 32, "-" * 32, "-" * 18)
 
         while self.count_records <= self.iter_records:
@@ -299,7 +299,7 @@ use command "add" to added new contact')
             print('The contact book is empty')
         else:
             self.result = 'Сontacts that are in the contact book:'
-            self.result += f'\n| {'Name':^14} | {'Phone':^50} | {'Email':^32} | {'Address':^32} | {'Birthday':^18} |\n'
+            self.result += f"\n| {'Name':^14} | {'Phone':^50} | {'Email':^32} | {'Address':^32} | {'Birthday':^18} |\n"
             self.result += "+ {0:<14} + {1:<50} + {2:^32} + {3:32} + {4:18} +".format("-" * 14, "-" * 50, "-" * 32, "-" * 32, "-" * 18)
             for record in self.data:
                 self.result += f'\n{str(self.data[record])}'
