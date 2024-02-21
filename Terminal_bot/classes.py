@@ -341,9 +341,9 @@ class Note(Field):
     def remove_tag_in_note(self, tag = None):
         if self.tag and tag in self.tag:
             self.tag.pop(self.tag.index(tag))
-            return f'Tag {tag} removed'
+            print(f'Tag {tag} for note: {self.title} deleted')
         elif self.tag and tag not in self.tag:
-            return f'Тo such tag: {tag} exists in this note,\n here is a list of tags for this note {str(*self.tag)}'
+            print(f'Тo such tag: {tag} exists in this note,\n here is a list of tags for this note {str(*self.tag)}')
         elif self.tag and tag is None:
             self.tag = []
 
@@ -385,7 +385,7 @@ class Note_book():
                 result.append(item)
         if result:
             return result
-        return f'No notes found for this tag: {word}'
+        print(f'No notes found for this tag: {word}')
     
     @decorate_errors
     def search_note_with_title(self, word) -> list:
@@ -395,7 +395,7 @@ class Note_book():
                 result.append(item)
         if result:
             return result
-        return f'No notes found for this title: {word}'
+        print(f'No notes found for this title: {word}')
     
     @decorate_errors
     def search_word_in_note(self, word) -> list:
@@ -417,6 +417,14 @@ class Note_book():
             for note in note_list:
                 note.remove_tag_in_note(tag)
                 return f'Tag removed for all notes'
+    
+    def sort_by_tags(self):
+        """
+        Сортує нотатки за тегами.
+        """
+
+        self.data.sort(key=lambda note: note.tag)
+
 
     iter_records = 1
 
@@ -462,5 +470,3 @@ class Note_book():
             # self.result += '\n'
 
             return self.result
-
-

@@ -134,19 +134,20 @@ def about(data):
                    ['address', '[Contact_id] [Address]', 'set for user [Name] an address [Address]'],
                    ['edit address', '[Contact_id] [Old address] [New address]', 'replace for user [Contact_id] an [Old address] by [New address]'],
                    ['birthday', '[Contact_id] [Birthday]', 'set for user [Contact_id] a birthday at [Birthday]'],
-                   ['find', '[search]', 'list [search] data in Name, Phones, Address, Emails, Birthdays. [search] must be 2 symbols min'],
                    ['next-birthdays', '[int]', 'shows upcoming birthdays if exist in period from today till [int] days'],
                    ['add note', '[string]', 'Add a note to Note Book'],
                    ['all notes', '', 'list all notes'],
                    ['del note', '[Title]', 'Remove [Note_id] note from Note Book'],
                    ['add tag', '[Title] [Tag]', 'add [Tag] to note [Title]'],
                    ['del tag', '[Title] [Tag]', 'remove [Tag] from note [Title]'],
-                   ['find notes', '[searchstring]', 'list all Notes with [searchstring] data in note and tags.[searchstring] must be 2 symbols minimum'],
-                   ['find tags', '[searchstring]', 'list all Notes with [searchstring] data in tags.[searchstring] must be 2 symbols minimum'],
+                   ['find note', '[searchstring]', 'list all Notes with [searchstring] data in note and tags.[searchstring] must be 2 symbols minimum'],
+                   ['find tag', '[searchstring]', 'list all Notes with [searchstring] data in tags.[searchstring] must be 2 symbols minimum'],
                    ['sort tag', '', 'list all Notes sorted by number of tags'],
                    ['close, exit', '', 'exit the bot'],
                    ['about', '', 'list all bot commands'],
-                   ['sort', '[path to folder]', 'sorted files in folder by format']]
+                   ['sort notes', '', 'sorting notes from tag']
+                   ['sorting', '[path to folder]', 'sorted files in folder by format']
+                   ]
     dashes = "{0:<14} + {1:50} + {2:^32} \n".format("-" * 14, "-" * 50, "-" * 32)
     help_string = ''
 
@@ -200,7 +201,7 @@ def add_tag(data):
     title, tag = data
     title = title.lower().capitalize()
     note = note_cache.search_note_with_title(title)
-    if note is not str():
+    if note is not None:
         note[0].add_tag(tag)
         return f'Tag {tag} for {title}'
     return note
@@ -208,31 +209,40 @@ def add_tag(data):
 @ input_error
 def del_tag(data):
     title, tag = data
+    tag = tag .lower().capitalize()
     title = title.lower().capitalize()
     note = note_cache.search_note_with_title(title)
-    if note is not str() :
+    if note is not None :
         note[0].remove_tag_in_note(tag)
         return
     return note
 
 @ input_error
 def find_note(data):
-    title = data
+    title = data.lower().capitalize()
     note = note_cache.search_note_with_title(title)
-    if note is not str():
-        return note.__str__()
-    print(note)
+    if note is not None:
+        for n in note:
+            print(n)
+            return
     note = note_cache.search_note_with_tag(title)
-    if note is not str():
-        return note.__str__()
-    print(note)
+    if note is not None:
+        print(1)
+        for n in note:
+            print(n)
+            return
+    
+@ input_error
+def find_tag(data):
+    tag = data.lower().capitalize()
+    note = note_cache.search_note_with_tag(tag)
+    if note is not None:
+        for n in note:
+            print(n)
 
+def sort_notes(data):
+    note_cache.sort_by_tags()
 
-def note_output():
-    pass
-
-def search_note():
-    pass
 
 def sorting(data):
     start(*data)
@@ -277,16 +287,18 @@ COMMANDS = {
     add_birthday: 'birthday',#
     show_all: 'show all',#
     exit: ['exit', 'good bye', 'close'],#
-    delete: 'delete',
+    delete: 'del',#
     about: 'about',#
     days_to_birthday: 'days to birthday',
-    add_note: 'add note',
-    all_notes: 'all notes',
-    del_note: 'del note',
-    search_note: 'find note',
-    add_tag: 'add tag',
-    del_tag: 'del tag',
-    sorting: 'sort'
+    add_note: 'add note',#
+    all_notes: 'all notes',#
+    del_note: 'del note',#
+    find_note: 'find note',#
+    add_tag: 'add tag',#
+    del_tag: 'del tag',#
+    find_tag: 'find tag',#
+    sorting: 'sorting',#
+    sort_notes: 'sort notes'#
 }
 
 def commands(data):
