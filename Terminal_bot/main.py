@@ -29,7 +29,7 @@ def greeting():
 
 @ input_error
 def add_contact(data):
-    name = data[0]
+    name = data
     result = cache.add_contact(Contact(name))
     if result:
         return result
