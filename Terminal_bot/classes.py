@@ -2,13 +2,23 @@ from datetime import datetime
 from collections import UserDict
 import re
 
-def value_error_decorator(inner):
-    def wraper(*args):
+# Функція декоратор для обробки помилок
+def decorate_errors(inner):
+    def wrap(*args):
         try:
             return inner(*args)
+        except IndexError:
+            return "IndexError, use command 'about' to learn about the correctness of entering commands"
         except ValueError:
-            print('ValueError')
-    return wraper
+            return "ValueError, use command 'about' to learn about the correctness of entering commands"
+        except KeyError:
+            return "KeyError, use command 'about' to learn about the correctness of entering commands"
+        except TypeError:
+            return "TypeError, use command 'about' to learn about the correctness of entering commands"
+        except ArithmeticError:
+            return "ArithmeticError, use command 'about' to learn about the correctness of entering commands"
+    return wrap
+
 
 class Field:
     def __init__(self, value):
@@ -104,7 +114,7 @@ class Contact():
         if birthday is not None:
             self.birthday = Birthday(birthday)
     
-    @value_error_decorator
+    @decorate_errors
     def add_phone(self, phone_value: str = None):
         new_phone = Phone(phone_value)
         if new_phone.validate_number():
@@ -112,7 +122,7 @@ class Contact():
             return(f'Phone: {phone_value} for {self.name} added')
 
 
-    @value_error_decorator    
+    @decorate_errors    
     def edit_phone(self, old_phone: str = None, new_phone: str = None):
         find_phone = self.find_phone(old_phone)
         if not find_phone:
@@ -124,28 +134,28 @@ class Contact():
             self.add_phone(new_phone)
             print(f'Contact {self.name} changed his phone number from {old_phone} to {new_phone}')
     
-    @value_error_decorator
+    @decorate_errors
     def remove_phone(self, phone_number: str = None):
         for element in self.phones:
             if element.value == phone_number:
                 self.phones.remove(element)
                 return    
 
-    @value_error_decorator
+    @decorate_errors
     def find_phone(self, phone_number: str = None):
         for phone in self.phones:
             if phone.value == phone_number:
                 return phone
         return None
     
-    @value_error_decorator
+    @decorate_errors
     def add_birthday(self, birthday: str = None):
         new_birthday = Birthday(birthday)
         if new_birthday.value is not None:
             self.birthday = new_birthday
             print(f'Birthday: {new_birthday} for {self.name} added')
 
-    @value_error_decorator
+    @decorate_errors
     def days_to_birthday(self):
         if self.birthday is None:
             return
@@ -175,14 +185,14 @@ class Contact():
                     contacts_with_birthday.append(name)
         print(f'The names of those whose birthdays is in {days_left} days: {contacts_with_birthday}')
 
-    @value_error_decorator
+    @decorate_errors
     def add_address(self, address: str = None):
         new_address = Address(address)
         if new_address is not None:
             self.address = new_address
             print(f'Address: {new_address} for {self.name} added')
 
-    @value_error_decorator
+    @decorate_errors
     def edit_address(self, old_address, new_address):
         if self.address == old_address:
             self.address = new_address
@@ -190,14 +200,14 @@ class Contact():
         else:
             print(f'Contact {self.name} not have address {old_address}')
 
-    @value_error_decorator
+    @decorate_errors
     def add_email(self, email: str = None):
         new_email = Email(email)
         if new_email.validate_email() is not False:
             self.email = new_email
             print(f'Email: {new_email} for {self.name} added')
 
-    @value_error_decorator
+    @decorate_errors
     def edit_email(self, email: str = None):
         new_email = Email(email)
         if new_email.validate_email() is not False:
@@ -298,7 +308,7 @@ use command "add" to added new contact')
             return self.result
 
 class Note(Field):
-    @value_error_decorator
+    @decorate_errors
     def __init__(self, note: str = None, title: str = None, tag: str = None):
         self.title = list()
         self.tag = list()
@@ -312,7 +322,7 @@ class Note(Field):
             word_list = note.split()
             self.title.append(word_list[0].capitalize())
             if len(word_list) > 1:
-                self.note = word_list[1].capitalize()
+                self.note = word_list[1].capitalize() + ' '.join(i for i in word_list[1:])
             else:
                 self.note = word_list[0].capitalize()
         elif note is not None:
@@ -320,14 +330,14 @@ class Note(Field):
         if self.title:
             print(f'New note with title {str(*self.title)} created')
     
-    @value_error_decorator
+    @decorate_errors
     def add_tag(self, tag):
         if tag and len(tag) > 30:
             print('The length of the tag should not exceed 30 characters')
         elif tag:
             self.tag.append(tag.lower().capitalize())
 
-    @value_error_decorator
+    @decorate_errors
     def remove_tag_in_note(self, tag = None):
         if self.tag and tag in self.tag:
             self.tag.pop(self.tag.index(tag))
@@ -348,7 +358,6 @@ class Note(Field):
 class Note_book():
     def __init__(self) -> None:
         self.data = []
-
     def tag_checker(tag: str):
         if tag is None:
             return
@@ -356,22 +365,39 @@ class Note_book():
             print('The length of the tag should not exceed 30 characters')
         else:
             return tag.lower().capitalize()
-        
-    def add_note(self,  note: str = None, title: str = None, tag: str = None,):
-        new_note = Note(note, title, tag)
+    
+    @decorate_errors
+    def del_note(self, note: Note):
+        self.data.remove(note)
+        print('Note deleted')
+
+    @decorate_errors    
+    def add_note(self,  note: str = None):
+        new_note = Note(note)
         if new_note:
             self.data.append(new_note)
 
-    def search_note_with_tag_or_title(self, word) -> list:
+    @decorate_errors
+    def search_note_with_tag(self, word) -> list:
         result = []
         for item in self.data:
-            print(item.tag,item.title)
-            if word.lower().capitalize() in item.tag or word.lower().capitalize() in item.title:
+            if word.lower().capitalize() in item.tag:
                 result.append(item)
         if result:
             return result
         return f'No notes found for this tag: {word}'
     
+    @decorate_errors
+    def search_note_with_title(self, word) -> list:
+        result = []
+        for item in self.data:
+            if word.lower().capitalize() in item.title:
+                result.append(item)
+        if result:
+            return result
+        return f'No notes found for this title: {word}'
+    
+    @decorate_errors
     def search_word_in_note(self, word) -> list:
         result = []
         for item in self.data:
@@ -381,6 +407,7 @@ class Note_book():
             return result
         return f'No notes found for this word: {word}'
     
+    @decorate_errors
     def remove_tag_for_all_notes(self, tag):
         if tag is not None:
             note_list = self.search_note_with_tag_or_title(tag)
@@ -391,8 +418,6 @@ class Note_book():
                 note.remove_tag_in_note(tag)
                 return f'Tag removed for all notes'
 
-    def edit_note():
-        pass
     iter_records = 1
 
     def __iter__(self):
@@ -434,7 +459,7 @@ class Note_book():
             for record in self.data:
                 self.result += f'\n{self.data[index]}'
                 index += 1
-            self.result += '\n'
+            # self.result += '\n'
 
             return self.result
 

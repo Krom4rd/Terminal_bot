@@ -12,29 +12,29 @@ def input_error(inner):
         try:
             return inner(*args)
         except IndexError:
-            return "IndexError"
+            return "IndexError, use command 'about' to learn about the correctness of entering commands"
         except ValueError:
-            return "ValueError"
+            return "ValueError, use command 'about' to learn about the correctness of entering commands"
         except KeyError:
-            return "KeyError"
+            return "KeyError, use command 'about' to learn about the correctness of entering commands"
         except TypeError:
-            return "TypeError"
+            return "TypeError, use command 'about' to learn about the correctness of entering commands"
         except ArithmeticError:
-            return 'ArithmeticError'
+            return "ArithmeticError, use command 'about' to learn about the correctness of entering commands"
     return wrap
 
-
+@ input_error
 def greeting():
     return "Вітаю! Ласкаво просимо до вашого персонального помічника."
 
-@input_error
+@ input_error
 def add_contact(data):
-    name = str(*data)
+    name = data[0]
     result = cache.add_contact(Contact(name))
     if result:
         return result
 
-# @input_error    
+@ input_error    
 def add_phone(data):
     name, phone = data
     name = name.lower().capitalize()
@@ -45,7 +45,7 @@ def add_phone(data):
     if phone:
         return cache[name].add_phone(phone.value) 
 
-@input_error# Не працює потрібно доробити (без пройденої валідації )
+@ input_error
 def edit_phone(data):
     name, old_phone, new_phone = data
     name = name.lower().capitalize()
@@ -54,7 +54,7 @@ def edit_phone(data):
         return 
     contact.edit_phone(old_phone,new_phone)
 
-@input_error
+@ input_error
 def del_phone(data):
     name, phone = data
     name = name.lower().capitalize()
@@ -69,11 +69,11 @@ def del_phone(data):
         return f'Phone: {phone.value} for contact: {name} deleted'
     return f'Contact: {name} not have this phone: {phone.value}\n{cache[name]}'
 
-@input_error
-def phone_output(data):
+@ input_error
+def contact_output(data):
     return cache.search_contact(data)
 
-@input_error
+@ input_error
 def add_email(data):
     name, email = data
     name = name.lower().capitalize()
@@ -82,7 +82,7 @@ def add_email(data):
         return 
     contact.add_email(email)
 
-@input_error
+@ input_error
 def edit_email(data):
     name, old_email, new_email = data
     name = name.lower().capitalize()
@@ -91,7 +91,7 @@ def edit_email(data):
         return 
     contact.edit_email(new_email)
 
-@input_error
+@ input_error
 def address(data):
     name, new_address = data
     name = name.lower().capitalize()
@@ -100,7 +100,7 @@ def address(data):
         return 
     contact.add_address(new_address)
 
-@input_error
+@ input_error
 def edit_address(data):
     name, old_address, new_address = data
     name = name.lower().capitalize()
@@ -109,7 +109,7 @@ def edit_address(data):
         return 
     contact.edit_address(old_address,new_address)
 
-@input_error
+@ input_error
 def add_birthday(data):
     name, birthday = data
     name = name.lower().capitalize()
@@ -118,11 +118,11 @@ def add_birthday(data):
         return 
     contact.add_birthday(birthday)
 
-@input_error
+@ input_error
 def about(data):
     commands = [['Command', 'Parameters', 'Description'],
-                   ['all', '', 'list all information about users'],
-                   ['add', '[Name]', 'create new user [Name] in adress book'],
+                   ['show all', '', 'list all information about users'],
+                   ['add contact', '[Name]', 'create new user [Name] in adress book'],
                    ['edit', '[Contact_id] [new_Name]', 'edit name of [Contact_id] to [new_Name]'],
                    ['del', '[Contact_id]', 'remove user [Contact_id] from adress book'],
                    ['add phone', '[Contact_id] [Phone]', 'add to user [Contact_id] a [Phone]'],
@@ -136,17 +136,16 @@ def about(data):
                    ['birthday', '[Contact_id] [Birthday]', 'set for user [Contact_id] a birthday at [Birthday]'],
                    ['find', '[search]', 'list [search] data in Name, Phones, Address, Emails, Birthdays. [search] must be 2 symbols min'],
                    ['next-birthdays', '[int]', 'shows upcoming birthdays if exist in period from today till [int] days'],
-                   ['note', '', 'Add a note to Note Book'],
-                   ['all-notes', '', 'list all notes'],
-                   ['edit-note', '[Note_id] [Note]', 'edit text of [Note_id] Note'],
-                   ['del-note', '[Note_id]', 'Remove [Note_id] note from Note Book'],
-                   ['add-tag', '[Note_id] [Tag]', 'add [Tag] to note [Note_id]'],
-                   ['del-tag', '[Note_id] [Tag]', 'remove [Tag] from note [Note_id]'],
-                   ['find-notes', '[searchstring]', 'list all Notes with [searchstring] data in note and tags.[searchstring] must be 2 symbols minimum'],
-                   ['find-tags', '[searchstring]', 'list all Notes with [searchstring] data in tags.[searchstring] must be 2 symbols minimum'],
-                   ['sort-tag', '', 'list all Notes sorted by number of tags'],
+                   ['add note', '[string]', 'Add a note to Note Book'],
+                   ['all notes', '', 'list all notes'],
+                   ['del note', '[Title]', 'Remove [Note_id] note from Note Book'],
+                   ['add tag', '[Title] [Tag]', 'add [Tag] to note [Title]'],
+                   ['del tag', '[Title] [Tag]', 'remove [Tag] from note [Title]'],
+                   ['find notes', '[searchstring]', 'list all Notes with [searchstring] data in note and tags.[searchstring] must be 2 symbols minimum'],
+                   ['find tags', '[searchstring]', 'list all Notes with [searchstring] data in tags.[searchstring] must be 2 symbols minimum'],
+                   ['sort tag', '', 'list all Notes sorted by number of tags'],
                    ['close, exit', '', 'exit the bot'],
-                   ['help', '', 'list all bot commands'],
+                   ['about', '', 'list all bot commands'],
                    ['sort', '[path to folder]', 'sorted files in folder by format']]
     dashes = "{0:<14} + {1:50} + {2:^32} \n".format("-" * 14, "-" * 50, "-" * 32)
     help_string = ''
@@ -156,68 +155,85 @@ def about(data):
         help_string += dashes
     return help_string
 
-@input_error
+@ input_error
 def show_all(data):
     return cache
 
-@input_error
+@ input_error
 def delete(data):
     result = cache.remove_contact(data)
     if result:
         return result
     
-@input_error
+@ input_error
 def days_to_birthday():
     days_left = int(input('Введіть кількість днів до Дня народження: '))
     contacts = Contact()
     return contacts.days_to_birthday(days_left)
 
-def note():
-    pass
+@ input_error
+def add_note(data):
+    text = ' '.join(i for i in data)
+    note_cache.add_note(text)
 
-def add_note():
-    pass
+@ input_error
+def all_notes(data):
+    return note_cache.__str__()
 
-def change_note():
-    pass
+@ input_error
+def del_note(data):
+    title = data.lower().capitalize()
+    notes = note_cache.search_note_with_title(title)
+    print(notes,type(notes),len(notes))
+    if notes is not str():
+        print(f'Found {len(notes)} notes with title or tag: {title}')
+        for i in notes:
+            print(i)
+            user_input = input('Delete this note?\n[input:"y"->Enter]->delete\n[Enter]->skip\n>>>')
+            if user_input == 'y':
+                note_cache.del_note(i)
+        return
+    return notes
+
+@ input_error
+def add_tag(data):
+    title, tag = data
+    title = title.lower().capitalize()
+    note = note_cache.search_note_with_title(title)
+    if note is not str():
+        note[0].add_tag(tag)
+        return f'Tag {tag} for {title}'
+    return note
+
+@ input_error
+def del_tag(data):
+    title, tag = data
+    title = title.lower().capitalize()
+    note = note_cache.search_note_with_title(title)
+    if note is not str() :
+        note[0].remove_tag_in_note(tag)
+        return
+    return note
+
+@ input_error
+def find_note(data):
+    title = data
+    note = note_cache.search_note_with_title(title)
+    if note is not str():
+        return note.__str__()
+    print(note)
+    note = note_cache.search_note_with_tag(title)
+    if note is not str():
+        return note.__str__()
+    print(note)
+
 
 def note_output():
-    pass
-
-def delete_note():
-    note_id = input("Введіть нотаток, який потрібно видалити: ")
-    # Якщо в class Note_book є метод для видалення нотаток
-    deleted_note = note_book.remove_note(note_id)
-
-    if deleted_note:
-        return f"Note with ID {note_id} успішно видалено із записної книжки."
-    else:
-        return f"Note with ID {note_id} не знайдено в записній книзі."
-
-
-def show_all_notes():
     pass
 
 def search_note():
     pass
 
-def tag():
-    pass
-
-def add_tag():
-    pass
-
-def delete_tag():
-    tag_name = input("Введіть назву тегу, який потрібно видалити: ")
-    # Якщо в class Note_book є метод для видалення тегів
-    deleted_tag = note_book.remove_tag(tag_name)
-
-    if deleted_tag:
-        return f"Тег {tag_name} успішно видалено із записної книжки."
-    else:
-        return f"Тег {tag_name} не знайдено в записній книзі."
-
-@input_error
 def sorting(data):
     start(*data)
 
@@ -226,9 +242,14 @@ def exit(data):
     # Якщо кеш пустий та окремий файл для зберігання існує тоді файл буде видалено
     if not cache and pathlib.Path('cache.bin').exists():
         pathlib.Path('cache.bin').unlink()
-        return None
+    if not note_cache and pathlib.Path('note_cache.bin').exists():
+        pathlib.Path('note_cache.bin').unlink()
+    if not cache and not note_cache:
+        return
     with open('cache.bin', 'wb') as file:
         pickle.dump(cache, file)
+    with open('note_cache.bin', 'wb') as file:
+        pickle.dump(note_cache, file)
 
 # Функія для відновлення кешу при повторному виклику програми
 def return_cache():
@@ -236,14 +257,19 @@ def return_cache():
         global cache
         cache = pickle.load(file)
 
+def return_note_cache():
+    with open('note_cache.bin', 'rb') as file:
+        global note_cache
+        note_cache = pickle.load(file) 
+
 # Словник ключ = Функція, значення= Ключові слова для запуску функцій
 COMMANDS = {
     greeting: 'hello',#
-    add_contact: 'add',#
+    add_contact: 'add contact',#
     add_phone: 'add phone',#
     edit_phone: 'edit phone',#
     del_phone: 'del phone',#
-    phone_output: 'phone',#
+    contact_output: 'contact',#
     add_email: 'add email',#
     edit_email: 'edit email',#
     address: 'address',#
@@ -253,14 +279,13 @@ COMMANDS = {
     exit: ['exit', 'good bye', 'close'],#
     delete: 'delete',
     about: 'about',#
-    add_birthday: 'birthday',
     days_to_birthday: 'days to birthday',
-    add_note: 'note',
-    delete_note: 'del note',
-    show_all_notes: 'show all notes',
-    search_note: 'snote',
-    add_tag: 'tag',
-    delete_tag: 'del tag',
+    add_note: 'add note',
+    all_notes: 'all notes',
+    del_note: 'del note',
+    search_note: 'find note',
+    add_tag: 'add tag',
+    del_tag: 'del tag',
     sorting: 'sort'
 }
 
@@ -297,6 +322,8 @@ def main():
     # Якщо раніше використовувалася програма та було створено кеш: його буде відновлено
     if pathlib.Path('cache.bin').exists():
         return_cache()
+    if pathlib.Path('note_cache.bin').exists():
+        return_note_cache()
     # Цикл для тривалої роботи програми
     while True:
         # Отримання даних від користувачаa
