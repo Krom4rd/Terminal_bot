@@ -29,7 +29,8 @@ def greeting():
 
 @input_error
 def add_contact(data):
-    result = cache.add_contact(Contact(data[0]))
+    name = data
+    result = cache.add_contact(Contact(name))
     if result:
         return result
 
@@ -141,7 +142,19 @@ def add_birthday():
         return f"Контакт {contact_name} успішно видалено з адресної книги."
     else:
         return f"Контакт {contact_name} не знайдено в адресной книзі."
-
+def add_birthday(book: Address_book, args: list):
+    if len(args) == 2:
+        try:
+            if int(args[0]) in book.data:
+                rec = book.data[int(args[0])]
+                rec.birthday = Birthday(args[1])
+                print('Birthday added sucessfully.')
+            else:
+                print(f'Contact id {args[0]} not found')
+        except ValueError:
+            print('Error: Date format must be: DD.MM.YYYY')
+    else:
+        print('Error: Invalid command format.')
 @input_error
 def add_birthday(book: Address_book, args: list):
     if len(args) == 2:
@@ -207,11 +220,6 @@ def delete_tag():
         return f"Тег {tag_name} успішно видалено із записної книжки."
     else:
         return f"Тег {tag_name} не знайдено в записній книзі."
-
-
-
-def about():
-    pass
 
 def sorting():
     pass
