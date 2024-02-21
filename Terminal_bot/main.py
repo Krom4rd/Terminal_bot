@@ -29,7 +29,7 @@ def greeting():
 
 @input_error
 def add_contact(data):
-    name = data
+    name = str(*data)
     result = cache.add_contact(Contact(name))
     if result:
         return result
@@ -40,8 +40,7 @@ def add_phone(data):
     name = name.lower().capitalize()
     contact = cache.search_contact(name)
     if contact is None:
-        return f'Contact with name: {name} not detected in cache,\n\
-use command "add" to added new contact'
+        return 
     phone = Phone(phone)
     if phone:
         return cache[name].add_phone(phone.value) 
@@ -52,17 +51,16 @@ def edit_phone(data):
     name = name.lower().capitalize()
     contact = cache.search_contact(name)
     if contact is None:
-        return f'Contact with name: {name} not detected in cache,\n\
-use command "add" to added new contact'
+        return 
     contact.edit_phone(old_phone,new_phone)
 
+@input_error
 def del_phone(data):
     name, phone = data
     name = name.lower().capitalize()
     contact = cache.search_contact(name)
     if contact is None:
-        return f'Contact with name: {name} not detected in cache,\n\
-use command "add" to added new contact'
+        return 
     phone = Phone(phone)
     if phone is None:
         return 
@@ -75,15 +73,50 @@ use command "add" to added new contact'
 def phone_output(data):
     return cache.search_contact(data)
 
+@input_error
 def add_email(data):
     name, email = data
     name = name.lower().capitalize()
     contact = cache.search_contact(name)
     if contact is None:
-        return f'Contact with name: {name} not detected in cache,\n\
-use command "add" to added new contact'
+        return 
     contact.add_email(email)
 
+@input_error
+def edit_email(data):
+    name, old_email, new_email = data
+    name = name.lower().capitalize()
+    contact = cache.search_contact(name)
+    if contact is None:
+        return 
+    contact.edit_email(new_email)
+
+@input_error
+def address(data):
+    name, new_address = data
+    name = name.lower().capitalize()
+    contact = cache.search_contact(name)
+    if contact is None:
+        return 
+    contact.add_address(new_address)
+
+@input_error
+def edit_address(data):
+    name, old_address, new_address = data
+    name = name.lower().capitalize()
+    contact = cache.search_contact(name)
+    if contact is None:
+        return 
+    contact.edit_address(old_address,new_address)
+
+@input_error
+def add_birthday(data):
+    name, birthday = data
+    name = name.lower().capitalize()
+    contact = cache.search_contact(name)
+    if contact is None:
+        return 
+    contact.add_birthday(birthday)
 
 @input_error
 def about(data):
@@ -99,7 +132,7 @@ def about(data):
                    ['edit email', '[Contact_id] [Email] [new_Email]', 'replace for user [Contact_id] an [Email] by [new_Email]'],
                    ['del email', '[Contact_id] [Email]', 'remove email [Email] from user [Contact_id]'],
                    ['address', '[Contact_id] [Address]', 'set for user [Name] an address [Address]'],
-                   ['del address', '[Contact_id]', 'remove address from [Contact_id]'],
+                   ['edit address', '[Contact_id] [Old address] [New address]', 'replace for user [Contact_id] an [Old address] by [New address]'],
                    ['birthday', '[Contact_id] [Birthday]', 'set for user [Contact_id] a birthday at [Birthday]'],
                    ['find', '[search]', 'list [search] data in Name, Phones, Address, Emails, Birthdays. [search] must be 2 symbols min'],
                    ['next-birthdays', '[int]', 'shows upcoming birthdays if exist in period from today till [int] days'],
@@ -131,45 +164,7 @@ def delete(data):
     result = cache.remove_contact(data)
     if result:
         return result
-
-@input_error  
-def add_birthday():
-    contact_name = input("Введіть ім'я контакту, який потрібно видалити: ")
-    deleted_contact = address_book.search_contact(contact_name)
     
-    if deleted_contact:
-        address_book.remove_contact(contact_name)
-        return f"Контакт {contact_name} успішно видалено з адресної книги."
-    else:
-        return f"Контакт {contact_name} не знайдено в адресной книзі."
-def add_birthday(book: Address_book, args: list):
-    if len(args) == 2:
-        try:
-            if int(args[0]) in book.data:
-                rec = book.data[int(args[0])]
-                rec.birthday = Birthday(args[1])
-                print('Birthday added sucessfully.')
-            else:
-                print(f'Contact id {args[0]} not found')
-        except ValueError:
-            print('Error: Date format must be: DD.MM.YYYY')
-    else:
-        print('Error: Invalid command format.')
-@input_error
-def add_birthday(book: Address_book, args: list):
-    if len(args) == 2:
-        try:
-            if int(args[0]) in book.data:
-                rec = book.data[int(args[0])]
-                rec.birthday = Birthday(args[1])
-                print('Birthday added sucessfully.')
-            else:
-                print(f'Contact id {args[0]} not found')
-        except ValueError:
-            print('Error: Date format must be: DD.MM.YYYY')
-    else:
-        print('Error: Invalid command format.')
-
 @input_error
 def days_to_birthday():
     days_left = int(input('Введіть кількість днів до Дня народження: '))
@@ -241,17 +236,21 @@ def return_cache():
 
 # Словник ключ = Функція, значення= Ключові слова для запуску функцій
 COMMANDS = {
-    greeting: 'hello',
-    add_contact: 'add',
-    add_phone: 'add phone',
-    edit_phone: 'edit phone',
-    del_phone: 'del phone',
-    phone_output: 'phone',
-    add_email: 'add email',
-    show_all: 'show all',
-    exit: ['exit', 'good bye', 'close'],
+    greeting: 'hello',#
+    add_contact: 'add',#
+    add_phone: 'add phone',#
+    edit_phone: 'edit phone',#
+    del_phone: 'del phone',#
+    phone_output: 'phone',#
+    add_email: 'add email',#
+    edit_email: 'edit email',#
+    address: 'address',#
+    edit_address: 'edit address',#
+    add_birthday: 'birthday',#
+    show_all: 'show all',#
+    exit: ['exit', 'good bye', 'close'],#
     delete: 'delete',
-    about: 'about',
+    about: 'about',#
     add_birthday: 'birthday',
     days_to_birthday: 'days to birthday',
     add_note: 'note',

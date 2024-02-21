@@ -73,13 +73,20 @@ class Birthday(Field):
             try:
             # Спроба перетворити введене значення на об'єкт date
                 self._value = datetime.strptime(value, '%d.%m.%Y')
+                return
             except ValueError:
-                try:
-                # Якщо перша спроба не вдалася, то спробуємо інший формат дати
-                    self._value = datetime.strptime(value, '%d-%m-%Y')
-                except ValueError:
-                # Якщо жоден з форматів не підходить, пишемо про помилку
-                    print("Date of birthday must be in dd.mm.yyyy or dd-mm-yyyy format")
+                pass
+            try:
+            # Якщо перша спроба не вдалася, то спробуємо інший формат дати
+                self._value = datetime.strptime(value, '%d-%m-%Y')
+                return
+            except ValueError:
+                pass
+            # Якщо жоден з форматів не підходить, пишемо про помилку
+            print("Date of birthday must be in dd.mm.yyyy or dd-mm-yyyy format")
+    
+    def __str__(self):
+        return self.value.strftime('%d-%m-%Y')
 
 class Contact():
     def __init__(self, name: Name, phone: Phone = None, email: Email = None, address: Address = None, birthday: Birthday = None):
@@ -134,7 +141,7 @@ class Contact():
     @value_error_decorator
     def add_birthday(self, birthday: str = None):
         new_birthday = Birthday(birthday)
-        if new_birthday is not None:
+        if new_birthday.value is not None:
             self.birthday = new_birthday
             print(f'Birthday: {new_birthday} for {self.name} added')
 
@@ -179,9 +186,9 @@ class Contact():
     def edit_address(self, old_address, new_address):
         if self.address == old_address:
             self.address = new_address
-            print(f'address {old_address} is changed to {new_address}')
+            print(f'Address {old_address} is changed to {new_address}')
         else:
-            print(f'address {old_address} not found')
+            print(f'Contact {self.name} not have address {old_address}')
 
     @value_error_decorator
     def add_email(self, email: str = None):
@@ -217,7 +224,7 @@ class Contact():
             self.contact_values.append(' ')
         try:
             if self.birthday:
-                self.contact_values.append('' + datetime.strftime(self.birthday.value,'%d-%m-%Y'))
+                self.contact_values.append('' + self.birthday.value.strftime('%d-%m-%Y'))
         except AttributeError:
             self.contact_values.append(' ')
         dashes = "+ {0:<14} + {1:<50} + {2:^32} + {3:32} + {4:18} +".format("-" * 14, "-" * 50, "-" * 32, "-" * 32, "-" * 18)
@@ -240,6 +247,8 @@ class Address_book(UserDict):
         if contact_name in self.data:
             return self.data[contact_name]
         else:
+            print(f'Contact with name: {contact_name} not detected in cache,\n\
+use command "add" to added new contact')
             return None
     
     iter_records = 3
