@@ -229,7 +229,7 @@ class Contact():
             self.contact_values.append(' ')
         dashes = "+ {0:<14} + {1:<50} + {2:^32} + {3:32} + {4:18} +".format("-" * 14, "-" * 50, "-" * 32, "-" * 32, "-" * 18)
         help_string = ''
-        help_string += f'| {self.contact_values[0]:^14} | {self.contact_values[1]:^50} | {self.contact_values[2]:^32} | {self.contact_values[3]:^32} | {self.contact_values[4]:^18} |\n'
+        help_string += f"| {self.contact_values[0]:^14} | {self.contact_values[1]:^50} | {self.contact_values[2]:^32} | {self.contact_values[3]:^32} | {self.contact_values[4]:^18} |\n"
         help_string += dashes
         return(help_string)
         
@@ -267,7 +267,7 @@ use command "add" to added new contact')
         self.count_records = 1
         self.page += 1
         self.result = f'Page: {self.page}'
-        self.result += f'\n| {'Name':^14} | {'Phone':^50} | {'Email':^32} | {'Address':^32} | {'Birthday':^18} |\n'
+        self.result += f"\n| {'Name':^14} | {'Phone':^50} | {'Email':^32} | {'Address':^32} | {'Birthday':^18} |\n"
         self.result += "+ {0:<14} + {1:<50} + {2:^32} + {3:32} + {4:18} +".format("-" * 14, "-" * 50, "-" * 32, "-" * 32, "-" * 18)
 
         while self.count_records <= self.iter_records:
@@ -289,7 +289,7 @@ use command "add" to added new contact')
             print('The contact book is empty')
         else:
             self.result = 'Сontacts that are in the contact book:'
-            self.result += f'\n| {'Name':^14} | {'Phone':^50} | {'Email':^32} | {'Address':^32} | {'Birthday':^18} |\n'
+            self.result += f"\n| {'Name':^14} | {'Phone':^50} | {'Email':^32} | {'Address':^32} | {'Birthday':^18} |\n"
             self.result += "+ {0:<14} + {1:<50} + {2:^32} + {3:32} + {4:18} +".format("-" * 14, "-" * 50, "-" * 32, "-" * 32, "-" * 18)
             for record in self.data:
                 self.result += f'\n{str(self.data[record])}'
