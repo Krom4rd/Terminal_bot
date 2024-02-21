@@ -1,5 +1,5 @@
 from classes import Address_book, Contact, Birthday, Phone, Email, Note_book , Note
-
+from sorter import start
 import pathlib
 import pickle
 
@@ -146,7 +146,8 @@ def about(data):
                    ['find-tags', '[searchstring]', 'list all Notes with [searchstring] data in tags.[searchstring] must be 2 symbols minimum'],
                    ['sort-tag', '', 'list all Notes sorted by number of tags'],
                    ['close, exit', '', 'exit the bot'],
-                   ['help', '', 'list all bot commands']]
+                   ['help', '', 'list all bot commands'],
+                   ['sort', '[path to folder]', 'sorted files in folder by format']]
     dashes = "{0:<14} + {1:50} + {2:^32} \n".format("-" * 14, "-" * 50, "-" * 32)
     help_string = ''
 
@@ -216,8 +217,9 @@ def delete_tag():
     else:
         return f"Тег {tag_name} не знайдено в записній книзі."
 
-def sorting():
-    pass
+@input_error
+def sorting(data):
+    start(*data)
 
 # Функція для запису кешу в окремий файл для зберігання данних
 def exit(data):
@@ -259,7 +261,7 @@ COMMANDS = {
     search_note: 'snote',
     add_tag: 'tag',
     delete_tag: 'del tag',
-    sorting: 'sorting'
+    sorting: 'sort'
 }
 
 def commands(data):

@@ -124,10 +124,17 @@ def sorter(folder_path):
 
     remove_empty_folders(folder_path)
 
-if __name__ == '__main__':
-    path = sys.argv[1]
+def start(data:str):
+    path = data
     print(f'Start in {path}')
 
     folder = Path(path)
     sorter(folder.resolve())
+
+# if __name__ == '__main__':
+#     path = sys.argv[1]
+#     print(f'Start in {path}')
+
+#     folder = Path(path)
+#     sorter(folder.resolve())
 
