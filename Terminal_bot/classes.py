@@ -37,21 +37,24 @@ class Name(Field):
 class Phone(Field):
     def __init__(self, value):
         super().__init__(value)
-        if not self.validate_number(value):
+        if self.validate_number() is False:
             print("Invalid phone number format. Try again!")
 
-    def validate_number(self, number):
-        return len(number) == 10 and number.isdigit()
+    def validate_number(self):
+        if len(self.value) == 10 and self.value.isdigit():
+            return True
+        else:
+            return False
 
 class Email(Field):
     def __init__(self, mail: str):
         super().__init__(mail)
-        if not self.validate_email(mail):
+        if self.validate_email() is False:
             print("Invalid email format. Try again!")
 
-    def validate_email(self, mail):
+    def validate_email(self):
         pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
-        if re.match(pattern, mail):
+        if re.match(pattern, self.value):
             return True
         else:
             return False
@@ -80,7 +83,7 @@ class Birthday(Field):
 
 class Contact():
     def __init__(self, name: Name, phone: Phone = None, email: Email = None, address: Address = None, birthday: Birthday = None):
-        self.name = name
+        self.name = name.lower().capitalize()
         self.phones = []
 
         if phone is not None:
@@ -97,32 +100,29 @@ class Contact():
     @value_error_decorator
     def add_phone(self, phone_value: str = None):
         new_phone = Phone(phone_value)
-        if new_phone is not None:
+        if new_phone.validate_number():
             self.phones.append(new_phone)
-            print(f'Phone: {phone_value} for {self.name} added')
-            return True
-        else:
-            return False
+            return(f'Phone: {phone_value} for {self.name} added')
+
 
     @value_error_decorator    
     def edit_phone(self, old_phone: str = None, new_phone: str = None):
-        for phone in self.phones:
-            if phone is not old_phone:
-                print(f'{old_phone} not exist')
-                return
-            new_phone_check = Phone(new_phone)  # валідація нового телефону
-            if new_phone_check:
-                phone = new_phone
-                print(f'Contact {self.name} changed his phone number from {old_phone} to {new_phone}')
+        find_phone = self.find_phone(old_phone)
+        if not find_phone:
+            print(f'{old_phone} not exist')
+            return
+        new_phone_check = Phone(new_phone)  # валідація нового телефону
+        if new_phone_check.validate_number() is not False:
+            self.remove_phone(old_phone)
+            self.add_phone(new_phone)
+            print(f'Contact {self.name} changed his phone number from {old_phone} to {new_phone}')
     
     @value_error_decorator
     def remove_phone(self, phone_number: str = None):
         for element in self.phones:
             if element.value == phone_number:
                 self.phones.remove(element)
-                print(f'phone: {phone_number} deleted')
                 return    
-        print(f'phone {phone_number} not found')
 
     @value_error_decorator
     def find_phone(self, phone_number: str = None):
@@ -168,14 +168,14 @@ class Contact():
     @value_error_decorator
     def add_email(self, email: str = None):
         new_email = Email(email)
-        if new_email is not None:
+        if new_email.validate_email() is not False:
             self.email = new_email
             print(f'Email: {new_email} for {self.name} added')
 
     @value_error_decorator
     def edit_email(self, email: str = None):
         new_email = Email(email)
-        if new_email is not None:
+        if new_email.validate_email() is not False:
             old_email = self.email
             self.email = new_email
             print(f'Contact {self.name} change email from {old_email} to {self.email}')
@@ -202,9 +202,9 @@ class Contact():
                 self.contact_values.append('' + datetime.strftime(self.birthday.value,'%d-%m-%Y'))
         except AttributeError:
             self.contact_values.append(' ')
-        dashes = "{0:<14} + {1:<50} + {2:^32} + {3:32} + {4:18}".format("-" * 14, "-" * 50, "-" * 32, "-" * 32, "-" * 18)
+        dashes = "+ {0:<14} + {1:<50} + {2:^32} + {3:32} + {4:18} +".format("-" * 14, "-" * 50, "-" * 32, "-" * 32, "-" * 18)
         help_string = ''
-        help_string += f'{self.contact_values[0]:^14} | {self.contact_values[1]:^50} | {self.contact_values[2]:^32} | {self.contact_values[3]:^32} | {self.contact_values[4]:^18}\n'
+        help_string += f'| {self.contact_values[0]:^14} | {self.contact_values[1]:^50} | {self.contact_values[2]:^32} | {self.contact_values[3]:^32} | {self.contact_values[4]:^18} |\n'
         help_string += dashes
         return(help_string)
         
@@ -212,6 +212,7 @@ class Contact():
 class Address_book(UserDict):
     def add_contact(self, contact: Contact):
         self.data[contact.name] = contact
+        return f'Contact with name: {contact.name} created'
 
     def remove_contact(self, contact_name: str):
         if contact_name in self.data:
@@ -223,7 +224,7 @@ class Address_book(UserDict):
         else:
             return None
     
-    iter_records = 5
+    iter_records = 3
 
     def __iter__(self):
         self.idx = 0
@@ -239,8 +240,8 @@ class Address_book(UserDict):
         self.count_records = 1
         self.page += 1
         self.result = f'Page: {self.page}'
-        self.result += f'\n{'Name':^14} | {'Phone':^50} | {'Email':^32} | {'Address':^32} | {'Birthday':^18}\n'
-        self.result += "{0:<14} + {1:<50} + {2:^32} + {3:32} + {4:18}".format("-" * 14, "-" * 50, "-" * 32, "-" * 32, "-" * 18)
+        self.result += f'\n| {'Name':^14} | {'Phone':^50} | {'Email':^32} | {'Address':^32} | {'Birthday':^18} |\n'
+        self.result += "+ {0:<14} + {1:<50} + {2:^32} + {3:32} + {4:18} +".format("-" * 14, "-" * 50, "-" * 32, "-" * 32, "-" * 18)
 
         while self.count_records <= self.iter_records:
             if self.idx >= len(self.data):
@@ -261,6 +262,8 @@ class Address_book(UserDict):
             print('The contact book is empty')
         else:
             self.result = 'Сontacts that are in the contact book:'
+            self.result += f'\n| {'Name':^14} | {'Phone':^50} | {'Email':^32} | {'Address':^32} | {'Birthday':^18} |\n'
+            self.result += "+ {0:<14} + {1:<50} + {2:^32} + {3:32} + {4:18} +".format("-" * 14, "-" * 50, "-" * 32, "-" * 32, "-" * 18)
             for record in self.data:
                 self.result += f'\n{str(self.data[record])}'
             self.result += '\n'
