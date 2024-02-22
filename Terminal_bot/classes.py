@@ -193,12 +193,9 @@ class Contact():
             print(f'Address: {new_address} for {self.name} added')
 
     @decorate_errors
-    def edit_address(self, old_address, new_address):
-        if self.address == old_address:
-            self.address = new_address
-            print(f'Address {old_address} is changed to {new_address}')
-        else:
-            print(f'Contact {self.name} not have address {old_address}')
+    def edit_address(self, new_address):
+        self.address = new_address
+        print(f'Address for {self.name} is changed to {new_address}')
 
     @decorate_errors
     def add_email(self, email: str = None):

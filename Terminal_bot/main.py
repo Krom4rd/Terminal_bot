@@ -92,8 +92,8 @@ def edit_email(data):
     contact.edit_email(new_email)
 
 @ input_error
-def address(data):
-    name, new_address = data
+def add_address(data):
+    name, new_address = data[0] , '  '.join(i for i in data[1:])
     name = name.lower().capitalize()
     contact = cache.search_contact(name)
     if contact is None:
@@ -102,12 +102,12 @@ def address(data):
 
 @ input_error
 def edit_address(data):
-    name, old_address, new_address = data
+    name, new_address = data[0], ' '.join(i for i in data[1:])
     name = name.lower().capitalize()
     contact = cache.search_contact(name)
     if contact is None:
         return 
-    contact.edit_address(old_address,new_address)
+    contact.edit_address(new_address)
 
 @ input_error
 def add_birthday(data):
@@ -123,16 +123,15 @@ def about(data):
     commands = [['Command', 'Parameters', 'Description'],
                    ['show all', '', 'list all information about users'],
                    ['add contact', '[Name]', 'create new user [Name] in adress book'],
-                   ['edit', '[Contact_id] [new_Name]', 'edit name of [Contact_id] to [new_Name]'],
-                   ['del', '[Contact_id]', 'remove user [Contact_id] from adress book'],
+                   ['edit name', '[old_Name] [new_Name]', 'edit name of [old_Name] to [new_Name]'],
+                   ['del contact', '[Name]', 'remove user [Name] from adress book'],
                    ['add phone', '[Contact_id] [Phone]', 'add to user [Contact_id] a [Phone]'],
                    ['edit phone', '[Contact_id] [Phone] [new_Phone]', 'replace for user [Contact_id] a [Phone] by [new_Phone]'],
                    ['del phone', '[Name] [Phone]', 'remove phone [Phone] from user [Name]'],
                    ['add email', '[Contact_id] [Email]', 'add to user [Contact_id] an [Email]'],
                    ['edit email', '[Contact_id] [Email] [new_Email]', 'replace for user [Contact_id] an [Email] by [new_Email]'],
-                   ['del email', '[Contact_id] [Email]', 'remove email [Email] from user [Contact_id]'],
                    ['address', '[Contact_id] [Address]', 'set for user [Name] an address [Address]'],
-                   ['edit address', '[Contact_id] [Old address] [New address]', 'replace for user [Contact_id] an [Old address] by [New address]'],
+                   ['edit address', '[Contact_id] [New address]', 'replace for user [Contact_id] an [New address]'],
                    ['birthday', '[Contact_id] [Birthday]', 'set for user [Contact_id] a birthday at [Birthday]'],
                    ['next-birthdays', '[int]', 'shows upcoming birthdays if exist in period from today till [int] days'],
                    ['add note', '[string]', 'Add a note to Note Book'],
@@ -162,10 +161,12 @@ def show_all(data):
 
 @ input_error
 def delete(data):
-    result = cache.remove_contact(data)
+    name = data.lower().capitalize()
+    result = cache.search_contact(name)
     if result:
-        return result
-    
+        cache.remove_contact(name)
+        print(f'Contact with name: {name} deleted')
+
 @ input_error
 def days_to_birthday():
     days_left = int(input('Введіть кількість днів до Дня народження: '))
@@ -282,12 +283,12 @@ COMMANDS = {
     contact_output: 'contact',#
     add_email: 'add email',#
     edit_email: 'edit email',#
-    address: 'address',#
+    add_address: 'add address',#
     edit_address: 'edit address',#
     add_birthday: 'birthday',#
     show_all: 'show all',#
     exit: ['exit', 'good bye', 'close'],#
-    delete: 'del',#
+    delete: 'del contact',#
     about: 'about',#
     days_to_birthday: 'days to birthday',
     add_note: 'add note',#
