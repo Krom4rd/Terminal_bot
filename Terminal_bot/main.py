@@ -24,11 +24,12 @@ def input_error(inner):
     return wrap
 
 @ input_error
-def greeting():
-    return "Вітаю! Ласкаво просимо до вашого персонального помічника."
+def greeting(data):
+    return "Greetings! Welcome to your personal assistant."
 
 @ input_error
 def add_contact(data):
+    print('DATA', data)
     name = data
     result = cache.add_contact(Contact(name))
     if result:
@@ -305,7 +306,9 @@ COMMANDS = {
 def commands(data):
     # Поділ переданих данних користувачем через пробіл
     comand_list = data.lower().split()
+    print("comand_list",comand_list)
     for key, value in COMMANDS.items():
+        print('KEY', key, value)
         if len(comand_list) == 1:
             if comand_list[0] == value:
                 return key, None
@@ -340,6 +343,7 @@ def main():
     # Цикл для тривалої роботи програми
     while True:
         # Отримання даних від користувачаa
+        print('input', input)
         user_input = input('>>>')
         if user_input:
             func, data = commands(user_input)
