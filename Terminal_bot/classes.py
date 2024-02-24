@@ -160,30 +160,11 @@ class Contact():
         if self.birthday is None:
             return
         today = datetime.now()
-        bday_date = self.birthday.value
-        print(bday_date)
+        bday_date = self.birthday.value.replace(year=today.year)
         if today > bday_date:
-            bday_date = datetime(day=bday_date.day, month=bday_date.month, year=today.year + 1)
+            bday_date = bday_date.replace(year=today.year + 1)
         days_to_next_bday = (bday_date - today).days
         return days_to_next_bday
-
-    def days_to_birthday_with_days_left(self, days_left):
-        contacts_with_birthday = []
-        today = datetime.today().date()
-        for name in self.name():
-            if name.birthday:
-                birthday = name.birthday.value
-                if isinstance(birthday, str):
-                    birthday = datetime.strptime(birthday, '%Y-%m-%d').date()
-                this_year_birthday = datetime(today.year, birthday.month, birthday.day).date()
-                if this_year_birthday >= today:
-                    next_birthday = this_year_birthday
-                else:
-                    next_birthday = datetime(today.year + 1, birthday.month, birthday.day).date()
-                days_until_birthday = (next_birthday - today).days
-                if days_until_birthday == days_left:
-                    contacts_with_birthday.append(name)
-        print(f'The names of those whose birthdays is in {days_left} days: {contacts_with_birthday}')
 
     @decorate_errors
     def add_address(self, address: str = None):
@@ -258,6 +239,29 @@ class Address_book(UserDict):
 use command "add" to added new contact')
             return None
     
+    def days_to_birthday_with_days_left(self, days_left):
+        days_left = int(days_left)
+        result = []
+        for key, value in self.data.items():
+            try:
+                days_to_birthday = value.days_to_birthday()
+                if days_to_birthday <= days_left:
+                    result.append({key:days_to_birthday})
+            except AttributeError:
+                continue
+        if result:
+            for contact in result:
+                result_string = f'{str(*contact.keys())}\'s birthday is in {str(*contact.values())} days'
+                if int(*contact.values()) == 1:
+                    result_string = result_string[:-1]
+                print(result_string)
+        else:
+            result_string = f'There are no contacts whose birthday is in {days_left} days'
+            if days_left > 1:
+                print(result_string)
+            else:
+                print(result_string[:-1])
+        
     iter_records = 3
 
     def __iter__(self):

@@ -133,7 +133,8 @@ def about(data):
                    ['address', '[Contact_id] [Address]', 'set for user [Name] an address [Address]'],
                    ['edit address', '[Contact_id] [New address]', 'replace for user [Contact_id] an [New address]'],
                    ['birthday', '[Contact_id] [Birthday]', 'set for user [Contact_id] a birthday at [Birthday]'],
-                   ['next-birthdays', '[int]', 'shows upcoming birthdays if exist in period from today till [int] days'],
+                   ['next birthdays', '[int]', 'shows upcoming birthdays if exist in period from today till [int] days'],
+                   ['days to birthday', '[Name]', 'shows upcoming birthdays for a contact [Name]'],
                    ['add note', '[string]', 'Add a note to Note Book'],
                    ['all notes', '', 'list all notes'],
                    ['del note', '[Title]', 'Remove [Note_id] note from Note Book'],
@@ -168,10 +169,19 @@ def delete(data):
         print(f'Contact with name: {name} deleted')
 
 @ input_error
-def days_to_birthday():
-    days_left = int(input('Введіть кількість днів до Дня народження: '))
-    contacts = Contact()
-    return contacts.days_to_birthday(days_left)
+def days_to_birthday(data):
+    name = data[0].lower().capitalize()
+    result = cache.search_contact(name)
+    if result:
+        days = result.days_to_birthday()
+        result_string = f'{name}\'s birthday is in {days} days'
+        if days > 1:
+            print(result_string)
+        else:
+            print(result_string[:-1])
+
+def next_birthdays(data):
+    cache.days_to_birthday_with_days_left(data)
 
 @ input_error
 def add_note(data):
@@ -291,6 +301,7 @@ COMMANDS = {
     delete: 'del contact',#
     about: 'about',#
     days_to_birthday: 'days to birthday',
+    next_birthdays: 'next birthdays',
     add_note: 'add note',#
     all_notes: 'all notes',#
     del_note: 'del note',#
