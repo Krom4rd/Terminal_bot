@@ -1,5 +1,6 @@
 from classes import Address_book, Contact, Birthday, Phone, Email, Note_book , Note
 from sorter import start
+from random import choice
 import pathlib
 import pickle
 
@@ -24,8 +25,14 @@ def input_error(inner):
     return wrap
 
 @ input_error
-def greeting():
-    return "Вітаю! Ласкаво просимо до вашого персонального помічника."
+def greeting(data):
+    greeting_list = [
+"Congratulations! Welcome to your personal assistant.",
+"Hello, how can I help?",
+"Glad to see you, let's work together.",
+"Hello You look good, you have a task for me?"
+]
+    print(choice(greeting_list))
 
 @ input_error
 def add_contact(data):
@@ -121,18 +128,18 @@ def add_birthday(data):
 @ input_error
 def about(data):
     commands = [['Command', 'Parameters', 'Description'],
+                   ['hello', '', 'The bot greets the user'],
                    ['show all', '', 'list all information about users'],
                    ['add contact', '[Name]', 'create new user [Name] in adress book'],
-                   ['edit name', '[old_Name] [new_Name]', 'edit name of [old_Name] to [new_Name]'],
                    ['del contact', '[Name]', 'remove user [Name] from adress book'],
                    ['add phone', '[Contact_id] [Phone]', 'add to user [Contact_id] a [Phone]'],
                    ['edit phone', '[Contact_id] [Phone] [new_Phone]', 'replace for user [Contact_id] a [Phone] by [new_Phone]'],
                    ['del phone', '[Name] [Phone]', 'remove phone [Phone] from user [Name]'],
                    ['add email', '[Contact_id] [Email]', 'add to user [Contact_id] an [Email]'],
                    ['edit email', '[Contact_id] [Email] [new_Email]', 'replace for user [Contact_id] an [Email] by [new_Email]'],
-                   ['address', '[Contact_id] [Address]', 'set for user [Name] an address [Address]'],
+                   ['add address', '[Contact_id] [Address]', 'set for user [Name] an address [Address]'],
                    ['edit address', '[Contact_id] [New address]', 'replace for user [Contact_id] an [New address]'],
-                   ['birthday', '[Contact_id] [Birthday]', 'set for user [Contact_id] a birthday at [Birthday]'],
+                   ['add birthday', '[Contact_id] [Birthday]', 'set for user [Contact_id] a birthday at [Birthday]'],
                    ['next birthdays', '[int]', 'shows upcoming birthdays if exist in period from today till [int] days'],
                    ['days to birthday', '[Name]', 'shows upcoming birthdays for a contact [Name]'],
                    ['add note', '[string]', 'Add a note to Note Book'],
@@ -142,7 +149,6 @@ def about(data):
                    ['del tag', '[Title] [Tag]', 'remove [Tag] from note [Title]'],
                    ['find note', '[searchstring]', 'list all Notes with [searchstring] data in note and tags.[searchstring] must be 2 symbols minimum'],
                    ['find tag', '[searchstring]', 'list all Notes with [searchstring] data in tags.[searchstring] must be 2 symbols minimum'],
-                   ['sort tag', '', 'list all Notes sorted by number of tags'],
                    ['close, exit', '', 'exit the bot'],
                    ['about', '', 'list all bot commands'],
                    ['sort notes', '', 'sorting notes from tag'],
@@ -196,8 +202,8 @@ def all_notes(data):
 def del_note(data):
     title = data.lower().capitalize()
     notes = note_cache.search_note_with_title(title)
-    print(notes,type(notes),len(notes))
     if notes is not str():
+        print('{0:<70}'.format('-' * 70))
         print(f'Found {len(notes)} notes with title or tag: {title}')
         for i in notes:
             print(i)
@@ -295,7 +301,7 @@ COMMANDS = {
     edit_email: 'edit email',#
     add_address: 'add address',#
     edit_address: 'edit address',#
-    add_birthday: 'birthday',#
+    add_birthday: 'add birthday',#
     show_all: 'show all',#
     exit: ['exit', 'good bye', 'close'],#
     delete: 'del contact',#
