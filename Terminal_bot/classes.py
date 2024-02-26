@@ -20,7 +20,7 @@ def decorate_errors(inner):
     return wrap
 
 
-class Field:
+class Field: # Батьківський клас для більшості класів для повернення значення в класі
     def __init__(self, value):
         self._value = None
         self.value = value
@@ -36,7 +36,7 @@ class Field:
     def __str__(self):
         return str(self.value)
 
-class Name(Field):
+class Name(Field): 
     def __init__(self, name: str)-> None:
         super().__init__(name.lower().capitalize())
         self.name = name.lower().capitalize()
@@ -50,7 +50,7 @@ class Phone(Field):
         if self.validate_number() is False:
             print("Invalid phone number format. Try again!")
 
-    def validate_number(self):
+    def validate_number(self): # валідаці номеру телефону
         if len(self.value) == 10 and self.value.isdigit():
             return True
         else:
@@ -62,7 +62,7 @@ class Email(Field):
         if self.validate_email() is False:
             print("Invalid email format. Try again!")
 
-    def validate_email(self):
+    def validate_email(self): # Валідація е-пошти
         pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
         if re.match(pattern, self.value):
             return True
@@ -115,114 +115,114 @@ class Contact():
             self.birthday = Birthday(birthday)
     
     @decorate_errors
-    def add_phone(self, phone_value: str = None):
-        new_phone = Phone(phone_value)
+    def add_phone(self, phone_value: str = None): # Функція класу для додавання номеру телефону для контакту
+        new_phone = Phone(phone_value) # Валідація номеру телефону
         if new_phone.validate_number():
-            self.phones.append(new_phone)
-            return(f'Phone: {phone_value} for {self.name} added')
-
+            self.phones.append(new_phone) # Додавання номеру телефону для контакту
+            return(f'Phone: {phone_value} for {self.name} added') # Повідомлення 
 
     @decorate_errors    
-    def edit_phone(self, old_phone: str = None, new_phone: str = None):
-        find_phone = self.find_phone(old_phone)
-        if not find_phone:
+    def edit_phone(self, old_phone: str = None, new_phone: str = None): # Функція класу для зміни номера телефону
+        find_phone = self.find_phone(old_phone) # Пошук потрібного номера телефону
+        if not find_phone: # Якщо не знайдено такого номера телефону в контака поверне повідомлення 
             print(f'{old_phone} not exist')
             return
         new_phone_check = Phone(new_phone)  # валідація нового телефону
         if new_phone_check.validate_number() is not False:
-            self.remove_phone(old_phone)
-            self.add_phone(new_phone)
+            self.remove_phone(old_phone) # Видалення номера старого номера телефону 
+            self.add_phone(new_phone) # Запис нового номера телефону
             print(f'Contact {self.name} changed his phone number from {old_phone} to {new_phone}')
     
-    @decorate_errors
-    def remove_phone(self, phone_number: str = None):
-        for element in self.phones:
-            if element.value == phone_number:
-                self.phones.remove(element)
+    @decorate_errors 
+    def remove_phone(self, phone_number: str = None): #Функція класу для видалення номеру телефону в контакту
+        for element in self.phones: # Номері телефону в контакту може бути кілька тому проходимось циклом по списку телефонів
+            if element.value == phone_number: # Якщо переданий користувачем номер існує в контакту
+                self.phones.remove(element) # Видаляє цей номер
                 return    
 
     @decorate_errors
-    def find_phone(self, phone_number: str = None):
-        for phone in self.phones:
-            if phone.value == phone_number:
-                return phone
-        return None
+    def find_phone(self, phone_number: str = None): # Функція класу для пошуку телефону в контакту 
+        for phone in self.phones: # Цикл що проходить по списку телефонів контакту
+            if phone.value == phone_number: # Якщо є відповідний 
+                return phone # Повертає його 
+        return None # Якщо немає номеру який ми шукали повертає None
     
     @decorate_errors
-    def add_birthday(self, birthday: str = None):
-        new_birthday = Birthday(birthday)
-        if new_birthday.value is not None:
-            self.birthday = new_birthday
+    def add_birthday(self, birthday: str = None): #Функція класу для додавання дня народження 
+        new_birthday = Birthday(birthday) # Передаються дані в клас Birthday для валідації вводу дати
+        if new_birthday.value is not None: # Якщо пройшла валідація 
+            self.birthday = new_birthday # Контакт додає день народження 
             print(f'Birthday: {new_birthday} for {self.name} added')
 
     @decorate_errors
-    def days_to_birthday(self):
-        if self.birthday is None:
+    def days_to_birthday(self): # Функція класу для підрахунку днів до наступного дня народження
+        if self.birthday is None: # Перевірка на наявність дня народження в обєкра
             return
-        today = datetime.now()
-        bday_date = self.birthday.value.replace(year=today.year)
-        if today > bday_date:
-            bday_date = bday_date.replace(year=today.year + 1)
-        days_to_next_bday = (bday_date - today).days
+        today = datetime.now() # Сьогоднішня дата
+        bday_date = self.birthday.value.replace(year=today.year) # Заміна року народження на теперішній рік 
+        if today > bday_date: # Якщо день народження в цьому році вже минув
+            bday_date = bday_date.replace(year=today.year + 1) # Розглянемо наступний рік
+        days_to_next_bday = (bday_date - today).days # Обчислення днів до дня народження 
         return days_to_next_bday
 
     @decorate_errors
-    def add_address(self, address: str = None):
-        new_address = Address(address)
-        if new_address is not None:
-            self.address = new_address
+    def add_address(self, address: str = None): # Функція класу для додавання адреси
+        new_address = Address(address) # Передані данні перетворюємо в клас Address
+        if new_address is not None:  # Перевірка на наявність адреси в обєкта
+            self.address = new_address  # Додавання адреси обєкту
             print(f'Address: {new_address} for {self.name} added')
 
     @decorate_errors
-    def edit_address(self, new_address):
+    def edit_address(self, new_address): # Функція класу для заміни адреси
         self.address = new_address
         print(f'Address for {self.name} is changed to {new_address}')
 
     @decorate_errors
-    def add_email(self, email: str = None):
-        new_email = Email(email)
-        if new_email.validate_email() is not False:
-            self.email = new_email
+    def add_email(self, email: str = None):# Функція класу для додавання е-пошти
+        new_email = Email(email) # Перевірка на валідність переданої е-пошти
+        if new_email.validate_email() is not False: 
+            self.email = new_email # Додавання е-пошти обєкту
             print(f'Email: {new_email} for {self.name} added')
 
     @decorate_errors
-    def edit_email(self, email: str = None):
-        new_email = Email(email)
+    def edit_email(self, email: str = None): #Функція класу для зміни п-пошти
+        new_email = Email(email) # Перевірка на валідність переданої е-пошти
         if new_email.validate_email() is not False:
-            old_email = self.email
-            self.email = new_email
+            old_email = self.email # Стара е-пошта
+            self.email = new_email # Додавання нової е-пошти
             print(f'Contact {self.name} change email from {old_email} to {self.email}')
     
-    def __str__(self):
-        self.contact_values = []
-        self.contact_values.append(self.name)
-        if self.phones:
-            self.contact_values.append("; ".join(p.value for p in self.phones))
-        else:
-            self.contact_values.append(' ')
-        try:
-            if self.email :
-                self.contact_values.append(self.email.value)
+    def __str__(self): # Функція класу для візуалізації обєкта класу як стоки
+        self.contact_values = [] # Список всіх значень які має обєкт
+        self.contact_values.append(self.name)# Додає імя до (списку всіх значень)
+        if self.phones: # Якщо обєкт має номер телефону додає до (списку всіх значень)
+            self.contact_values.append("; ".join(p.value for p in self.phones)) # Додає імя до (списку всіх значень)
+        else: # Якщо немає номерів телефону додає " "
+            self.contact_values.append(' ') 
+        try: # Обробка помилки адже якщо в обєкта немає наступного значення винекне помилка
+            if self.email : # Якщо обєкт має в наявності е-пошту
+                self.contact_values.append(self.email.value) # Додає е-пошту до (списку всіх значень)
         except AttributeError:
             self.contact_values.append(' ')
-        try:
-            if self.address:
+        try: 
+            if self.address: 
                 self.contact_values.append(self.address.value)
         except AttributeError:
             self.contact_values.append(' ')
-        try:
+        try: 
             if self.birthday:
-                self.contact_values.append('' + self.birthday.value.strftime('%d-%m-%Y'))
+                self.contact_values.append('' + self.birthday.value.strftime('%d-%m-%Y')) # Додає дату народження в форматі дд-мм-рррр до (списку всіх значень)
         except AttributeError:
-            self.contact_values.append(' ')
-        dashes = "+ {0:<14} + {1:<50} + {2:^32} + {3:32} + {4:18} +".format("-" * 14, "-" * 50, "-" * 32, "-" * 32, "-" * 18)
+            self.contact_values.append(' ') 
+        dashes = "+ {0:<14} + {1:<50} + {2:^32} + {3:32} + {4:18} +".format("-" * 14, "-" * 50, "-" * 32, "-" * 32, "-" * 18) 
         help_string = ''
         help_string += f'| {self.contact_values[0]:^14} | {self.contact_values[1]:^50} | {self.contact_values[2]:^32} | {self.contact_values[3]:^32} | {self.contact_values[4]:^18} |\n'
-        help_string += dashes
+        help_string += dashes 
         return(help_string)
         
 
-class Address_book(UserDict):
+class Address_book(UserDict): # Клас реалізований я кеш для обєктів класу Contact
+
     def add_contact(self, contact: Contact):
         self.data[contact.name] = contact
         return f'Contact with name: {contact.name} created'
@@ -322,8 +322,8 @@ class Note(Field):
         if note is not None and title is None:
             word_list = note.split()
             self.title.append(word_list[0].capitalize())
-            if len(word_list) > 1:
-                self.note = word_list[1].capitalize() + ' '.join(i for i in word_list[1:])
+            if len(word_list) > 2:
+                self.note = word_list[1].capitalize() + ' '.join(i for i in word_list[2:])
             else:
                 self.note = word_list[0].capitalize()
         elif note is not None:
@@ -351,10 +351,10 @@ class Note(Field):
     def __str__(self):
         try:
             if self.tag:
-                return f'Title: {", ".join(i for i in self.title)}\nTag: {", ".join(i for i in self.tag)}\nNote:\n{self.note}\n'
+                return f'{'_' * 70 + '\n'}Title: {", ".join(i for i in self.title)}\nTag: {", ".join(i for i in self.tag)}\nNote:\n{self.note}\n'
         except AttributeError:
             pass
-        return f'Title: {", ".join(i for i in self.title)}\nNote:\n{self.note}\n'
+        return f'{'_' * 70 + '\n'}Title: {", ".join(i for i in self.title)}\nNote:\n{self.note}\n'
         
 class Note_book():
     def __init__(self) -> None:
@@ -458,11 +458,10 @@ class Note_book():
         self.iter_records = iter_records
    
     def __str__(self):
-
         if not self.data:
             print('The note book is empty')
         else:
-            self.result = 'Notes that are in the note book:'
+            self.result ='Notes that are in the note book:\n'
             index = 0
 
             for record in self.data:
@@ -471,3 +470,67 @@ class Note_book():
             # self.result += '\n'
 
             return self.result
+        
+class User_Info(Field):
+    def __init__(self, login, password) -> None:
+        self.login = login
+        self.__password = None
+        if self.password_validator(password):
+            self.password = password
+
+    @property
+    def password(self):
+            print('Sorry you not hawe a acces to return password.')
+
+    @password.setter
+    def password(self, value):
+        try:
+            old_password, new_password = value
+        except ValueError:
+            new_password = value
+            old_password = ''
+        if self.__password is None:
+            if self.password_validator(new_password):
+                self.__password = new_password
+        else:
+            if not old_password:
+                print('The old password must be transferred.')
+            elif self.validate(old_password):
+                if self.password_validator(new_password):
+                    self.__password = new_password
+                    print('The password has been changed.')
+
+    def validate(self,value):
+        if self.__password == value:
+            return True
+        print("Wrong old password.")
+        return False
+
+    def password_validator(self, value:str):
+        if len(value) < 8:
+            print('The password must contain at least 8 characters.')
+        upper_simbol = []
+        lower_simbol = []
+        num = []
+        special_simbols = ['~',' ','!','@','#','$','%','^','&','*','(',')','_','-','+','=','{','}','[',']','|',':',';','\"','\'','<',',','>',',','?','/','.']
+        for s in range(0,len(value)):
+            s_copy = ord(value[s])
+            if s_copy in range(97,122):
+                lower_simbol.append(s_copy)
+            elif s_copy in range(65,92):
+                upper_simbol.append(s_copy)
+            elif s_copy in range(48,58):
+                num.append(s_copy)
+            else:
+                if value[s] not in special_simbols:
+                    print(f'Only the following special characters can be used: {"".join(i for i in special_simbols)} Not "{value[s]}".')
+        if upper_simbol and lower_simbol and num:
+            return value
+        if not num:
+            print('The password must contain at least one digit.')
+        if not upper_simbol:
+            print('The password must contain at least one lowercase letter.')
+        if not lower_simbol:
+            print('The password must contain at least one capital letter.')
+        self.password_validator(input('>>>'))
+
